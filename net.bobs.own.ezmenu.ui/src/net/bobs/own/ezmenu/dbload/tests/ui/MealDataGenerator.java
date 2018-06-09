@@ -36,6 +36,8 @@ public class MealDataGenerator {
 	
 	private EzMenuMeal  meal = null;
 	private Logger logger = LogManager.getLogger(MealDataGenerator.class.getName());
+	//false = no logging, true = debug logging 
+	private final boolean LOG = false;
 
 	H2Database db = null;
 	EzMenuMealMapper  mealMapper = null;
@@ -133,8 +135,8 @@ public class MealDataGenerator {
 				logger.debug(hex.getMessage(), hex);
 			}
 			mealCount--;
-			logger.debug("mealCount= " + mealCount);
-			logger.debug("Meal= " + meal.getMealName() + "added");
+			writeToLog("mealCount= " + mealCount);
+			writeToLog("Meal= " + meal.getMealName() + "added");
 		}
 	}
 	
@@ -144,57 +146,28 @@ public class MealDataGenerator {
 	public void deleteMeals() {
 		
 		try {
-			logger.debug("deleteMeals method ENTER:");
+			writeToLog("deleteMeals method ENTER:");
 			List<ITable> mealsList = RunDMLRequestFactory.makeSelectRequest(mealMapper);
-			logger.debug("# of meals in database= " + mealsList.size());
+			writeToLog("# of meals in database= " + mealsList.size());
 			
 			for (int mealsIx = 0; mealsIx < mealsList.size(); mealsIx++) {
 				meal = (EzMenuMeal) mealsList.get(mealsIx);
-				logger.debug("Calling meal.delete() method for meal= " + meal.getMealName());
+				writeToLog("Calling meal.delete() method for meal= " + meal.getMealName());
 				mealMapper.delete(meal);
 				RunDMLRequestFactory.makeDeleteRequest(mealMapper, meal);
-				logger.debug("Meal=" + meal.getMealName() + " deleted");
+				writeToLog("Meal=" + meal.getMealName() + " deleted");
 			}
 		} catch (RunDMLException hex) {
 			hex.printStackTrace();
 			System.exit(16);
 		}
-		logger.debug("deleteMeals method EXIT:");
+		writeToLog("deleteMeals method EXIT:");
 	}
 	
-//	static private void startH2ConnectionPool() {
-//
-//		//Create H2MyOwnConnectionPool from Configuration File - Uncomment these for testing...
-////		final String EZMENU_MYOWN_CONFIG = "D:\\Java\\EzMenu_Workspace\\net.bobs.own.ezmenu.ui\\config\\ezmenu_db.properties\\";
-////		H2ConnectionPoolFactory.makePool(H2ConnectionPoolFactory.PoolTypes.MYOWN, EzMenuConstants.POOLID, EZMENU_MYOWN_CONFIG);
-//		
-//		//Create H2MyOwnConnectionPool from Properties Object
-//		Properties mealLoadConfig = new Properties();
-//		mealLoadConfig.put("db.path", "D:\\\\Java\\\\EzMenu_Workspace\\\\net.bobs.own.ezmenu\\\\db\\\\ezmenu");
-//		mealLoadConfig.put("db.user","EzMenuUser");
-//		mealLoadConfig.put("db.password","Aqpk3728");
-//		mealLoadConfig.put("db.maxconnections","10");
-//		mealLoadConfig.put("db.poolid",EzMenuConstants.POOLID);
-//		H2ConnectionPoolFactory.getInstance().makePool(H2ConnectionPoolFactory.PoolTypes.MYOWN, EzMenuConstants.POOLID, mealLoadConfig);
-//
-//	}
-//	
-//	static private void startH2HikariConnectionPool() {
-//		
-//		//Create H2HikariConnectionPool from Configuration File - Uncomment these for testing...		
-////		final String EZMENU_HIKARI_CONFIG = "/Java/EzMenu_Workspace/net.bobs.own.ezmenu.ui/config/ezmenu_db_hikari.properties";	
-////		H2ConnectionPoolFactory.makePool(H2ConnectionPoolFactory.PoolTypes.HIKARICP, EzMenuConstants.POOLID, EZMENU_HIKARI_CONFIG);
-//		
-//		//Create H2HikariConnectionPool from Properties
-//		final String HIKARI_JDBC_PATH = "jdbc:h2:D:\\\\Java\\\\EzMenu_Workspace\\\\net.bobs.own.ezmenu\\\\db\\\\ezmenu";	
-//		Properties mealLoadConfig = new Properties();
-//		mealLoadConfig.put("dataSourceClassName", "org.h2.jdbcx.JdbcDataSource");
-//		mealLoadConfig.put("dataSource.url", HIKARI_JDBC_PATH);
-//		mealLoadConfig.put("dataSource.user","EzMenuUser");
-//		mealLoadConfig.put("dataSource.password","Aqpk3728");
-//		mealLoadConfig.put("maximumPoolSize","10");
-//		H2ConnectionPoolFactory.getInstance().makePool(H2ConnectionPoolFactory.PoolTypes.HIKARICP, EzMenuConstants.POOLID, mealLoadConfig);
-//
-//	}
+	private void writeToLog(String message) {
+	   if (LOG) {
+	      logger.debug(message);
+	   }
+	}
 
 }

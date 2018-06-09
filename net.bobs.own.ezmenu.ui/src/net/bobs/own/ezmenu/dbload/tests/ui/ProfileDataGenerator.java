@@ -1,17 +1,14 @@
 package net.bobs.own.ezmenu.dbload.tests.ui;
 
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.bobs.own.db.h2.pool.H2ConnectionPoolFactory;
 import net.bobs.own.db.h2.pool.H2Database;
 import net.bobs.own.db.rundml.exception.RunDMLException;
 import net.bobs.own.db.rundml.factory.RunDMLRequestFactory;
 import net.bobs.own.db.rundml.mapper.ITable;
-import net.bobs.own.ezmenu.constants.ui.EzMenuConstants;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
@@ -38,6 +35,7 @@ public class ProfileDataGenerator {
 		
 		static private Logger logger = LogManager.getLogger(ProfileDataGenerator.class.getName());
 		private EzMenuProfileMapper profileMapper = null;
+		private final boolean LOG = false;
 
 		private H2Database db = null;
       String[] categories = null;
@@ -176,7 +174,7 @@ public class ProfileDataGenerator {
    			   profile = gennedProfs[profIx];
       			RunDMLRequestFactory.makeInsertRequest(profileMapper, profile);
       			numberInserted++;
-      			logger.debug("Profile= " + profile.getName() + "added");
+      			writeToLog("Profile= " + profile.getName() + "added");
    			}
    			prepMatrixIx++;
 				} catch (RunDMLException hex) {
@@ -208,8 +206,8 @@ public class ProfileDataGenerator {
 		            logger.debug(hex.getMessage(), hex);
 		         }
 		         numberProfiles--;
-		         logger.debug("profile count= " + numberProfiles);
-		         logger.debug("Profile= " + profile.getName() + "added");
+		         writeToLog("profile count= " + numberProfiles);
+		         writeToLog("Profile= " + profile.getName() + "added");
 		      }
 		      
 		      return profileDbCount;
@@ -222,21 +220,21 @@ public class ProfileDataGenerator {
 		public void deleteProfiles() {
 			
 			try {
-				logger.debug("deleteProfiles method ENTER:");
+				writeToLog("deleteProfiles method ENTER:");
 				List<ITable> profilesList = RunDMLRequestFactory.makeSelectRequest(profileMapper);
-				logger.debug("# of profiles in database= " + profilesList.size());
+				writeToLog("# of profiles in database= " + profilesList.size());
 				
 				for (int profilesIx = 0; profilesIx < profilesList.size(); profilesIx++) {
 					EzMenuProfile profile = (EzMenuProfile) profilesList.get(profilesIx);
-					logger.debug("Calling profile.delete() method for profile= " + profile.getName());
+					writeToLog("Calling profile.delete() method for profile= " + profile.getName());
 					RunDMLRequestFactory.makeDeleteRequest(profileMapper, profile);
-					logger.debug("Profile=" + profile.getName() + " deleted");
+					writeToLog("Profile=" + profile.getName() + " deleted");
 				}
 			} catch (RunDMLException hex) {
 				hex.printStackTrace();
 				System.exit(16);
 			}
-			logger.debug("deletes method EXIT:");
+			writeToLog("deletes method EXIT:");
 		}
 		
 		private EzMenuProfile[] makeProfiles(int[][] categoriesMatrix, int[][] prepTimeMatrix) {
@@ -314,41 +312,10 @@ public class ProfileDataGenerator {
 		   return profiles;
 		}
 		
-		
-		
-//		private void startH2ConnectionPool() {
-//
-//			//Create H2MyOwnConnectionPool from Configuration File - Uncomment these for testing...
-////			final String EZMENU_MYOWN_CONFIG = "D:\\Java\\EzMenu_Workspace\\net.bobs.own.ezmenu.ui\\config\\ezmenu_db.properties\\";
-////			H2ConnectionPoolFactory.makePool(H2ConnectionPoolFactory.PoolTypes.MYOWN, EzMenuConstants.POOLID, EZMENU_MYOWN_CONFIG);
-//			
-//			//Create H2MyOwnConnectionPool from Properties Object
-//			Properties profileLoadConfig = new Properties();
-//			profileLoadConfig.put("db.path", "D:\\\\Java\\\\EzMenu_Workspace\\\\net.bobs.own.ezmenu\\\\db\\\\ezmenu");
-//			profileLoadConfig.put("db.user","EzMenuUser");
-//			profileLoadConfig.put("db.password","Aqpk3728");
-//			profileLoadConfig.put("db.maxconnections","10");
-//			profileLoadConfig.put("db.poolid",EzMenuConstants.POOLID);
-//			H2ConnectionPoolFactory.getInstance().makePool(H2ConnectionPoolFactory.PoolTypes.MYOWN, EzMenuConstants.POOLID, profileLoadConfig);
-//
-//		}
-//		
-//		private void startH2HikariConnectionPool() {
-//			
-//			//Create H2HikariConnectionPool from Configuration File - Uncomment these for testing...		
-////			final String EZMENU_HIKARI_CONFIG = "/Java/EzMenu_Workspace/net.bobs.own.ezmenu.ui/config/ezmenu_db_hikari.properties";	
-////			H2ConnectionPoolFactory.makePool(H2ConnectionPoolFactory.PoolTypes.HIKARICP, EzMenuConstants.POOLID, EZMENU_HIKARI_CONFIG);
-//			
-//			//Create H2HikariConnectionPool from Properties
-//			final String HIKARI_JDBC_PATH = "jdbc:h2:D:\\\\Java\\\\EzMenu_Workspace\\\\net.bobs.own.ezmenu\\\\db\\\\ezmenu";	
-//			Properties profileLoadConfig = new Properties();
-//			profileLoadConfig.put("dataSourceClassName", "org.h2.jdbcx.JdbcDataSource");
-//			profileLoadConfig.put("dataSource.url", HIKARI_JDBC_PATH);
-//			profileLoadConfig.put("dataSource.user","EzMenuUser");
-//			profileLoadConfig.put("dataSource.password","Aqpk3728");
-//			profileLoadConfig.put("maximumPoolSize","10");
-//			H2ConnectionPoolFactory.getInstance().makePool(H2ConnectionPoolFactory.PoolTypes.HIKARICP, EzMenuConstants.POOLID, profileLoadConfig);
-//
-//		}
+		private void writeToLog(String msg) {
+		   if (LOG) {
+		      logger.debug(msg);
+		   }
+		}
 
 }
