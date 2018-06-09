@@ -1,0 +1,72 @@
+Decisions 
+#1	Test all cases in Category & Category/w Preparation Time indidually (13 tests)
+	OR combine tests in one case (n tests)  (IE Not enough meals for all categories
+	would also include 0-15 preparation time)
+	
+Categories
+-----------
+Beef
+Chicken
+Fish
+Pasta
+Pork
+Turkey 
+Veggie
+* Use EzMenuProfileDay.getCategoryConstants method for current list
+
+Prep Times
+----------
+0-15
+16-30
+31-45
+46-60
+61+
+* Use EzMenuProfileDay.getPrepTimeConstants method for current list
+
+Duration of Menu Plan
+---------------------
+1 Week
+2 Weeks
+3 Weeks
+4 Weeks
+
+================================================================================
+Category Tests (Same Preparation Time used for All Meals & Profile)
+================================================================================
+
+Description                                                                     Test Class
+--------------------------------------------------------------------------      -----------------------------
+No Meals for one category (test each category?)
+
+Not enough meals for all categories in profile                                  NotEnoughMealsAllCategoriesTest
+
+Not enough meals (3 categories), exact # of meals for remaining categories      
+
+Exact # of meals for all categories                                             ExactNumberMealsMenuPlanTest
+
+Not enough meals (2 categories), Exact # of meals (3 categories), 
+	more than enough meals (2 categories)
+	
+Exact # of meals (3 categories),  more than enough meals (4 categories)         ExactMoreThanMealsMenuPlanTest
+
+More than enough meals all categories                                           MoreThanMealsMenuPlanTest
+
+================================================================================
+Category & Preparation Time Tests
+================================================================================
+
+Description                                                                     Test Class
+--------------------------------------------------------------------------      -----------------------------
+All Categories w/0-15 preparation time                                          NotEnoughMealsAllCategoriesTest
+
+All Categories w/16-30 preparation time
+
+All Categories w/31-45 preparation time                                         MoreThanMealsMenuPlanTest
+
+All Categories w/46-60 preparation time
+
+All Categories w/61+ preparation time                                           ExactMoreThanMealsMenuPlanTest
+
+1 Category w/0-15 preparation time, 2 categories w/16-30 preparation time,      ExactNumberMealsMenuPlanTest
+	2 category w/31-45 preparation time,1 category w/46-60 preparation time,
+	1 category w/61+ preparation time

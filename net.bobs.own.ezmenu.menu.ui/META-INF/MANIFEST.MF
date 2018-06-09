@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui
+Bundle-SymbolicName: net.bobs.own.ezmenu.menu.ui
+Bundle-Version: 1.0.1
+Bundle-Activator: net.bobs.own.ezmenu.menu.ui.Activator
+Require-Bundle: org.eclipse.ui,
+  org.eclipse.core.runtime,
+  org.eclipse.e4.core.di
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: javax.inject;version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: net.bobs.own.ezmenu.menu.handlers.ui

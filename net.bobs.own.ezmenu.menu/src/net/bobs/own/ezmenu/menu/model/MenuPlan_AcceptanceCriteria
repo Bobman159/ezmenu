@@ -1,0 +1,26 @@
+#1	Generate Menu Plan for 1 to 4 weeks based on user Input
+
+#	First, user will select profile to be used for Menu Plan generation.  User 
+	will be shown the Profile Details (Day, Category for Day, Preparation Time 
+	for Day) will be shown for profile selected.
+
+#	Second, user will select the number of weeks for the menu plan generation.  
+	Initially only one week menu plan generation will be allowed.  
+	
+#	Lastly user will be shown the generated Menu Plan.  User will be able to 
+	change the meal used for a given day.  If user elects to change the meal for
+	a given day, user will be presented with a list of meals matching the 
+	category of the current generated meal.
+	
+#	If no meals exist for a category (I.E. Beef) then meals from next category 
+	would be used.   If all categories have been attempted to be used (IE 
+	switched category = Original Category) and not enough meals were found, Then 
+	the report will be terminated and the user notified.  Report should notify 
+	user this was done.
+		Not enough Beef switch to Chicken
+		Not enough Chicken switch to Fish
+		Not enough Fish switch to Pasta
+		Not enough Pasta switch to Pork
+		Not enough Pork switch to Turkey
+		Not enough Turkey switch to Veggie
+		Not enough Veggie switch to Beef
