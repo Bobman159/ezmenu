@@ -40,7 +40,7 @@ class EzMenuMealMapperDBTest {
 	static void setUpBeforeClass() throws Exception {
 		IH2ConnectionPool pool = H2ConnectionPoolFactory.getInstance()
 		                                                .makePool(H2ConnectionPoolFactory.PoolTypes.MYOWN, 
-		      "D:\\Java\\EzMenu_Workspace\\net.bobs.own.ezmenu\\db\\ezmenu_test", 
+            "C:\\Users\\Robert Anderson\\git\\ezmenu\\net.bobs.own.ezmenu\\db\\ezmenu_test",
 				"EzMenuUser", "Aqpk3728", "10", "ezmenuTest.pool");		
 		      
 		ezMenuDbTest = new H2Database(pool);

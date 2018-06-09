@@ -22,7 +22,7 @@ import net.bobs.own.db.rundml.mapper.ITable;
 import net.bobs.own.ezmenu.dbload.tests.ui.MealDataGenerator;
 import net.bobs.own.ezmenu.dbload.tests.ui.ProfileDataGenerator;
 import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
-import net.bobs.own.ezmenu.menu.model.MenuPlan;
+import net.bobs.own.ezmenu.menu.model.MenuPlan_Old;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
@@ -82,7 +82,7 @@ class MoreThanMealsMenuPlanTest {
    @BeforeAll
    static void setUpBeforeClass() throws Exception {
       IH2ConnectionPool pool = H2ConnectionPoolFactory.getInstance().makePool(H2ConnectionPoolFactory.PoolTypes.MYOWN, 
-            "D:\\\\Java\\\\EzMenu_Workspace\\\\net.bobs.own.ezmenu\\\\db\\\\ezmenu_test", 
+            "C:\\Users\\Robert Anderson\\git\\ezmenu\\net.bobs.own.ezmenu\\db\\ezmenu_test",
             "EzMenuUser", "Aqpk3728", "10", "ezmenuTest.pool");      
       ezMenuDbTest = new H2Database(pool);
       ProfileDataGenerator profGen = new ProfileDataGenerator(ezMenuDbTest);
@@ -113,7 +113,7 @@ class MoreThanMealsMenuPlanTest {
    void testGenerate1Week() {
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate1Week);
-      MenuPlan plan = new MenuPlan(profile,1);
+      MenuPlan_Old plan = new MenuPlan_Old(profile,1);
       plan.generate();
       
       EzMenuMeal meal = plan.getMeal(0, EzMenuProfileDay.SUNDAY);
@@ -159,7 +159,7 @@ class MoreThanMealsMenuPlanTest {
       
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate2Weeks);
-      MenuPlan plan = new MenuPlan(profile,2);
+      MenuPlan_Old plan = new MenuPlan_Old(profile,2);
       plan.generate();
       
       assertEquals(plan.numberWeeks(),2);
@@ -207,7 +207,7 @@ class MoreThanMealsMenuPlanTest {
       
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate3Weeks);
-      MenuPlan plan = new MenuPlan(profile,3);
+      MenuPlan_Old plan = new MenuPlan_Old(profile,3);
       plan.generate();
       
       assertEquals(plan.numberWeeks(),3);
@@ -255,7 +255,7 @@ class MoreThanMealsMenuPlanTest {
       
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate4Weeks);
-      MenuPlan plan = new MenuPlan(profile,4);
+      MenuPlan_Old plan = new MenuPlan_Old(profile,4);
       plan.generate();
       
       assertEquals(plan.numberWeeks(),4);
@@ -298,7 +298,7 @@ class MoreThanMealsMenuPlanTest {
       }
    }
    
-   private boolean hasDuplicate(MenuPlan plan, EzMenuMeal meal,int planWeek,int planDay) {
+   private boolean hasDuplicate(MenuPlan_Old plan, EzMenuMeal meal,int planWeek,int planDay) {
       
       boolean hasDuplicate = false;
       
