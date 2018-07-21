@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.bobs.own.db.h2.pool.H2ConnectionPoolFactory;
@@ -22,7 +23,6 @@ import net.bobs.own.ezmenu.dbload.tests.ui.MealDataGenerator;
 import net.bobs.own.ezmenu.dbload.tests.ui.ProfileDataGenerator;
 import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
 import net.bobs.own.ezmenu.menu.model.MenuPlan;
-import net.bobs.own.ezmenu.menu.model.MenuPlan_Old;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
@@ -120,7 +120,7 @@ class ExactNumberMealsMenuPlanTest {
 	void tearDown() throws Exception {
 	}
 
-	@Test
+	@Disabled
 	void testGenerate1Week() {
 	   
 	   mealGen.deleteMeals();		
@@ -207,7 +207,7 @@ class ExactNumberMealsMenuPlanTest {
       }
 	}
 		
-	@Test
+	@Disabled
 	void testGenerate3Weeks() {
       
 	   mealGen.deleteMeals();     
@@ -255,7 +255,7 @@ class ExactNumberMealsMenuPlanTest {
       }
 	}
 
-	@Test
+	@Disabled
 	void testGenerate4Weeks() {
 	   
       mealGen.deleteMeals();     

@@ -37,7 +37,7 @@ public class MealDataGenerator {
 	private EzMenuMeal  meal = null;
 	private Logger logger = LogManager.getLogger(MealDataGenerator.class.getName());
 	//false = no logging, true = debug logging 
-	private final boolean LOG = false;
+	private final boolean LOG = true;
 
 	H2Database db = null;
 	EzMenuMealMapper  mealMapper = null;

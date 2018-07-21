@@ -39,10 +39,10 @@ public class MenuPlan {
       List<ITable> mealsList = null;
 
       menuPlan.clear();
+      mealMap.clear();
       logger.debug("Generate meal plan for " + numWeeks + " weeks");
 
       for (int weekIx = 0; weekIx < numWeeks; weekIx++) {
-
          for (int day = 0; day <= EzMenuProfileDay.SATURDAY; day++) {
 
             if (mealsList != null && mealsList.size() > 0) {
@@ -50,58 +50,39 @@ public class MenuPlan {
             }
 
             EzMenuProfileDay profDay = profile.getProfileDay(day);
-            String weekCatgy = profDay.getCategory().toString();
-            String weekPrepTime = profDay.getprepTime();
+            /* *  Get the meals information up front instead of as each day is processed
+             * *  Call selectByCategoryPrep 1x to query the database.  The results of the query are
+             *    saved to mealMap.  The profile  category.prepTime is used as the key for the list of meals
+             */
+            String mealKey = profDay.getCategory().toString() + "." + profDay.getprepTime();
+            mealsList = getMeals(mealKey);
+            if (mealsList != null && mealsList.size() == 0) {
+               //TODO: Skip to next category since no meals? (may need to handle mealsList == null) also
+            }
 
-            // try {
-            // TODO: Consider getting the meals information up front instead of as each day
-            // is processed
-            // IE right now if a category & prep-time ("beef","0-15") is in the profile 2x
-            // then
-            // selectByCategoryPrep is called 2x (1x for each day). maybe it would be better
-            // to
-            // make the database query 1x and save it. This logic would then use the list
-            // from where it was saved
-            mealsList = getMeals(weekCatgy, weekPrepTime);
-
-            // TODO: If there are 0 meals (mealsList = null?) THEN exit?
-            // NO, think I want to skip to next category...
-            // mealsList = mealMapper.selectByCategoryPrep(weekCatgy,weekPrepTime);
-            logger.debug("Retrieved " + mealsList.size() + " meals from database");
-
-            // } catch (RunDMLException e) {
-            // // TODO Display Message dialog to user?
-            // e.printStackTrace();
-            // }
 
             // NOW pick the meal(s) to use in the menu plan...
             int lowerSeed = 0;
             int upperSeed = mealsList.size();
+//            logger.debug("lowerSeed =" + lowerSeed + " upperSeed= " + upperSeed);
 
-            boolean planned = false;
-            while (planned == false) {
+//            boolean planned = false;
+//            while (planned == false) {
+              while (mealsList.size() > 0) { 
                int randomNumber = ThreadLocalRandom.current().nextInt(lowerSeed, upperSeed);
                EzMenuMeal meal = (EzMenuMeal) mealsList.get(randomNumber);
-               // Check for duplicate entry and if it's not in the plan add it, otherwise
-               // generate a new number to use
-               // another meal
-               boolean used = false;
-               used = planWeek.contains(meal);
-               if (used == false) {
-                  // Make sure the meal wasn't used elsewhere in the Menu plan before adding
-                  // it....
-                  used = isInPlan(meal);
-                  if (used == false) {
-                     planWeek.add(meal);
-                     logger.debug("Meal " + meal.getMealName() + "with category " + meal.getMealCatgy()
-                           + " and preparation time " + meal.getMealPrepTime() + " added to plan");
-                     planned = true;
-                  }
-               }
+               //Add the meal to the menu Plan AND remove it from the list of Results from the database
+               //this should eliminate the need to check for duplicate meals being used since only 
+               //meals not currently in the menu plan will be in the list of database results.
+               planWeek.add(meal);
+               logger.debug("Meal " + meal.getMealName() + " with category " + meal.getMealCatgy()
+               + " and preparation time " + meal.getMealPrepTime() + " added to plan");
+               removeMeal(meal,mealKey);
+               //TODO: Don't quit the loop till the plan is complete?
             }
          } // END for(int day = 0;day < EzMenuProfileDay.SATURDAY...)
 
-         logger.debug("Added menu for week " + numWeeks + " to plan");
+         logger.debug("Added menu for week " + (weekIx + 1) + " to plan");
          menuPlan.add(planWeek);
          planWeek = new ArrayList<EzMenuMeal>(7);
 
@@ -128,24 +109,24 @@ public class MenuPlan {
       return (EzMenuMeal) weekPlan.get(day);
    }
 
-   private boolean isInPlan(EzMenuMeal meal) {
-      boolean inPlan = false;
-      ArrayList<EzMenuMeal> planWeek = null;
-
-      Iterator planIterator = menuPlan.iterator();
-      while (planIterator.hasNext()) {
-         planWeek = (ArrayList<EzMenuMeal>) planIterator.next();
-         inPlan = planWeek.contains(meal);
-         // Found an entry, stop looking for more.
-         if (inPlan) {
-            logger.debug("Duplicate meal " + meal.getMealName() + " with category " + meal.getMealCatgy() + " and "
-                  + "preparation time " + meal.getMealPrepTime() + " found in plan");
-            break;
-         }
-      }
-
-      return inPlan;
-   }
+//   private boolean isInPlan(EzMenuMeal meal) {
+//      boolean inPlan = false;
+//      ArrayList<EzMenuMeal> planWeek = null;
+//
+//      Iterator planIterator = menuPlan.iterator();
+//      while (planIterator.hasNext()) {
+//         planWeek = (ArrayList<EzMenuMeal>) planIterator.next();
+//         inPlan = planWeek.contains(meal);
+//         // Found an entry, stop looking for more.
+//         if (inPlan) {
+//            logger.debug("Duplicate meal " + meal.getMealName() + " with category " + meal.getMealCatgy() + " and "
+//                  + "preparation time " + meal.getMealPrepTime() + " found in plan");
+//            break;
+//         }
+//      }
+//
+//      return inPlan;
+//   }
 
    /*
     * Returns the number of entries from the mealsList (database Query) that are
@@ -188,33 +169,39 @@ public class MenuPlan {
    //// return newSwitchCategory;
    // }
 
-   private List<ITable> getMeals(String weekCategory, String weekPrepTime) {
+//   private List<ITable> getMeals(String weekCategory, String weekPrepTime) {
+   private List<ITable> getMeals(String mealKey) {
 
       EzMenuMealMapper mealMapper = EzMenuMealMapper.getMapper();
       List<ITable> mealsList = null;
-//      int requiredMeals = 0;
-//      int alreadyUsedMeals = 0;
-//      int mealsNeeded = 0;
       boolean done = false;
 
       //Has the meal(s) already been queried from the database? - YES use that
       //NO - get the meal(s) from the database
-      String mealKey = weekCategory + "." + weekPrepTime;
-      mealsList = mealMap.get(mealKey);
+       mealsList = mealMap.get(mealKey);
       
-      if (mealsList.size() == 0) {
+      if (mealsList != null && mealsList.size() == 0) {
          //TODO: No meals for this category - switch to a different category 
          // *  Do this until a category that has meals is found OR all the current categories have been 
          //    checked AND not enough meals have been found - 
          //    *  IF this is true issue a message and return the partially completed meal plan
-      } else {
-         //NO meals found in map, query database....
+         //    *  May need to queryDatabase....
+//      } else if (mealsList.size() > 0) {
+//         //TODO: Found meals - ret
+//         String test = null;
+      } else if (mealsList == null ) {
+         //No meals found in map, query database....
          while (!done) {
-
-            // String switchCatgy = weekCategory;
             try {
 //               if (switchCategory.equals(" ")) {
+                 //mealKey = "category.prepTime" so extract those values for querying the database
+                  int index = mealKey.indexOf('.');
+                  String weekCategory  = mealKey.substring(0, index);
+                  String weekPrepTime = mealKey.substring(index+1);
                   mealsList = mealMapper.selectByCategoryPrep(weekCategory, weekPrepTime);
+                  logger.debug("Retrieved " + mealsList.size() + " meals from database for category " +
+                               weekCategory + " and prep time " + weekPrepTime);
+                  mealMap.put(mealKey, mealsList);
 //               } else {
                   // TODO: May need to switch/change prepTime as well so meals can be found?
 //                  mealsList = mealMapper.selectByCategoryPrep(switchCategory, weekPrepTime);
@@ -261,9 +248,12 @@ public class MenuPlan {
 //              }  
          } // END while(!done)         
       }
-      
 
       return mealsList;
 
+   }
+   
+   private void removeMeal(EzMenuMeal meal,String mealKey) {
+      
    }
 }
