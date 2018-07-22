@@ -120,7 +120,7 @@ class ExactNumberMealsMenuPlanTest {
 	void tearDown() throws Exception {
 	}
 
-	@Disabled
+	@Test
 	void testGenerate1Week() {
 	   
 	   mealGen.deleteMeals();		
@@ -207,7 +207,7 @@ class ExactNumberMealsMenuPlanTest {
       }
 	}
 		
-	@Disabled
+	@Test
 	void testGenerate3Weeks() {
       
 	   mealGen.deleteMeals();     
@@ -255,7 +255,7 @@ class ExactNumberMealsMenuPlanTest {
       }
 	}
 
-	@Disabled
+	@Test
 	void testGenerate4Weeks() {
 	   
       mealGen.deleteMeals();     

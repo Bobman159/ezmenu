@@ -45,30 +45,28 @@ public class MenuPlan {
       for (int weekIx = 0; weekIx < numWeeks; weekIx++) {
          for (int day = 0; day <= EzMenuProfileDay.SATURDAY; day++) {
 
-            if (mealsList != null && mealsList.size() > 0) {
-               mealsList.clear();
-            }
-
             EzMenuProfileDay profDay = profile.getProfileDay(day);
             /* *  Get the meals information up front instead of as each day is processed
              * *  Call selectByCategoryPrep 1x to query the database.  The results of the query are
              *    saved to mealMap.  The profile  category.prepTime is used as the key for the list of meals
              */
             String mealKey = profDay.getCategory().toString() + "." + profDay.getprepTime();
+            /* Get a list of Meals to process
+               *  getMeals() should return a list of meals (and will handle category switching?)
+               *  OR do it here? 
+            */
             mealsList = getMeals(mealKey);
-            if (mealsList != null && mealsList.size() == 0) {
-               //TODO: Skip to next category since no meals? (may need to handle mealsList == null) also
-            }
+            if (mealsList == null || mealsList.size() == 0) {
+               //TODO: getMeals() could not find a list of meals, display message to user and return a partial plan
+               logger.debug("Meals list null or empty, exiting menu generation");
+               break;
+            } else if (mealsList != null & mealsList.size() > 0) {   
 
-
-            // NOW pick the meal(s) to use in the menu plan...
-            int lowerSeed = 0;
-            int upperSeed = mealsList.size();
-//            logger.debug("lowerSeed =" + lowerSeed + " upperSeed= " + upperSeed);
-
-//            boolean planned = false;
-//            while (planned == false) {
-              while (mealsList.size() > 0) { 
+               // NOW pick the meal(s) to use in the menu plan...
+               int lowerSeed = 0;
+               int upperSeed = mealsList.size();  
+               
+               //Only adding up one meal at a time, SO no need for a loop.   
                int randomNumber = ThreadLocalRandom.current().nextInt(lowerSeed, upperSeed);
                EzMenuMeal meal = (EzMenuMeal) mealsList.get(randomNumber);
                //Add the meal to the menu Plan AND remove it from the list of Results from the database
@@ -76,9 +74,10 @@ public class MenuPlan {
                //meals not currently in the menu plan will be in the list of database results.
                planWeek.add(meal);
                logger.debug("Meal " + meal.getMealName() + " with category " + meal.getMealCatgy()
-               + " and preparation time " + meal.getMealPrepTime() + " added to plan");
-               removeMeal(meal,mealKey);
-               //TODO: Don't quit the loop till the plan is complete?
+                            + " and preparation time " + meal.getMealPrepTime() + " added to plan");
+   //               removeMeal(meal,mealKey);
+               //ASSUME: There are no duplicate meals in the meal list - remove only removes the first occurrence
+               mealsList.remove(meal);
             }
          } // END for(int day = 0;day < EzMenuProfileDay.SATURDAY...)
 
@@ -253,7 +252,7 @@ public class MenuPlan {
 
    }
    
-   private void removeMeal(EzMenuMeal meal,String mealKey) {
-      
-   }
+//   private void removeMeal(EzMenuMeal meal,String mealKey) {
+//      
+//   }
 }
