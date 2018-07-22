@@ -21,7 +21,7 @@ import net.bobs.own.db.rundml.mapper.ITable;
 import net.bobs.own.ezmenu.dbload.tests.ui.MealDataGenerator;
 import net.bobs.own.ezmenu.dbload.tests.ui.ProfileDataGenerator;
 import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
-import net.bobs.own.ezmenu.menu.model.MenuPlan_Old;
+import net.bobs.own.ezmenu.menu.model.MenuPlan;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
@@ -115,7 +115,7 @@ class ExactMoreThanMealsMenuPlanTest {
 
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate1Week);
-      MenuPlan_Old plan = new MenuPlan_Old(profile,1);
+      MenuPlan plan = new MenuPlan(profile,1);
       plan.generate();
       
       EzMenuMeal meal = plan.getMeal(0, EzMenuProfileDay.SUNDAY);
@@ -160,7 +160,7 @@ class ExactMoreThanMealsMenuPlanTest {
       
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate2Weeks);
-      MenuPlan_Old plan = new MenuPlan_Old(profile,2);
+      MenuPlan plan = new MenuPlan(profile,2);
       plan.generate();
       
       assertEquals(plan.numberWeeks(),2);
@@ -209,7 +209,7 @@ class ExactMoreThanMealsMenuPlanTest {
       //Only Veggie category has more than enough meals
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate3Weeks);
-      MenuPlan_Old plan = new MenuPlan_Old(profile,3);
+      MenuPlan plan = new MenuPlan(profile,3);
       plan.generate();
       
       assertEquals(plan.numberWeeks(),3);
@@ -257,7 +257,7 @@ class ExactMoreThanMealsMenuPlanTest {
       
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate4Weeks);
-      MenuPlan_Old plan = new MenuPlan_Old(profile,4);
+      MenuPlan plan = new MenuPlan(profile,4);
       plan.generate();
       
       assertEquals(plan.numberWeeks(),4);
@@ -300,7 +300,7 @@ class ExactMoreThanMealsMenuPlanTest {
       }
    }
 
-   private boolean hasDuplicate(MenuPlan_Old plan, EzMenuMeal meal,int planWeek,int planDay) {
+   private boolean hasDuplicate(MenuPlan plan, EzMenuMeal meal,int planWeek,int planDay) {
       
       boolean hasDuplicate = false;
       
