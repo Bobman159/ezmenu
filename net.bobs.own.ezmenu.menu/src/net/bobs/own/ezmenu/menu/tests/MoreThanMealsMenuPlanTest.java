@@ -115,6 +115,7 @@ class MoreThanMealsMenuPlanTest {
       mealGen.generateMeals(mealGenerate1Week);
       MenuPlan plan = new MenuPlan(profile,1);
       plan.generate();
+      assertEquals(plan.isOk(),true);
       
       EzMenuMeal meal = plan.getMeal(0, EzMenuProfileDay.SUNDAY);
       assertEquals(plan.numberWeeks(),1);
@@ -161,6 +162,7 @@ class MoreThanMealsMenuPlanTest {
       mealGen.generateMeals(mealGenerate2Weeks);
       MenuPlan plan = new MenuPlan(profile,2);
       plan.generate();
+      assertEquals(plan.isOk(),true);
       
       assertEquals(plan.numberWeeks(),2);
       for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {
@@ -209,6 +211,7 @@ class MoreThanMealsMenuPlanTest {
       mealGen.generateMeals(mealGenerate3Weeks);
       MenuPlan plan = new MenuPlan(profile,3);
       plan.generate();
+      assertEquals(plan.isOk(),true);
       
       assertEquals(plan.numberWeeks(),3);
       for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {   
@@ -257,6 +260,7 @@ class MoreThanMealsMenuPlanTest {
       mealGen.generateMeals(mealGenerate4Weeks);
       MenuPlan plan = new MenuPlan(profile,4);
       plan.generate();
+      assertEquals(plan.isOk(),true);
       
       assertEquals(plan.numberWeeks(),4);
       for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {   

@@ -1,10 +1,12 @@
 package net.bobs.own.ezmenu.menu.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
+//import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,7 +22,8 @@ import net.bobs.own.db.rundml.mapper.ITable;
 import net.bobs.own.ezmenu.dbload.tests.ui.MealDataGenerator;
 import net.bobs.own.ezmenu.dbload.tests.ui.ProfileDataGenerator;
 import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
-import net.bobs.own.ezmenu.menu.model.MenuPlan_Old;
+import net.bobs.own.ezmenu.menu.model.MenuPlan;
+import net.bobs.own.ezmenu.menu.model.MenuPlan.MENUPLAN_STATUS;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
@@ -110,51 +113,16 @@ class NotEnoughMealsAllCategoriesTest {
    }
 
    @Test
-   void testGenerate1Week() {
+   void testNoMealsInDatabase() {
       mealGen.deleteMeals();     
       mealGen.generateMeals(mealGenerate1Week);
-      MenuPlan_Old plan = new MenuPlan_Old(profile,1);
+      MenuPlan plan = new MenuPlan(profile,1);
       plan.generate();
-      
-      EzMenuMeal meal = plan.getMeal(0, EzMenuProfileDay.SUNDAY);
-      assertEquals(plan.numberWeeks(),1);
-      assertEquals(meal.getMealCatgy(),"Beef");
-      assertEquals(meal.getMealPrepTime(),prepTime);
-      assertEquals(false,hasDuplicate(plan,meal,0,EzMenuProfileDay.SUNDAY));
-     
-      meal = plan.getMeal(0, EzMenuProfileDay.MONDAY);
-      assertEquals(meal.getMealCatgy(),"Chicken");
-      assertEquals(meal.getMealPrepTime(),prepTime);
-      assertEquals(false,hasDuplicate(plan,meal,0,EzMenuProfileDay.MONDAY));
-      
-      meal = plan.getMeal(0, EzMenuProfileDay.TUESDAY);
-      assertEquals(meal.getMealCatgy(),"Fish");
-      assertEquals(meal.getMealPrepTime(),prepTime);
-      assertEquals(false,hasDuplicate(plan,meal,0,EzMenuProfileDay.TUESDAY));
-      
-      meal = plan.getMeal(0, EzMenuProfileDay.WEDNESDAY);
-      assertEquals(meal.getMealCatgy(),"Pasta");
-      assertEquals(meal.getMealPrepTime(),prepTime);
-      assertEquals(false,hasDuplicate(plan,meal,0,EzMenuProfileDay.WEDNESDAY));
-
-      meal = plan.getMeal(0, EzMenuProfileDay.THURSDAY);
-      assertEquals(meal.getMealCatgy(),"Pork");
-      assertEquals(meal.getMealPrepTime(),prepTime);
-      assertEquals(false,hasDuplicate(plan,meal,0,EzMenuProfileDay.THURSDAY));
-      
-      meal = plan.getMeal(0, EzMenuProfileDay.FRIDAY);
-      assertEquals(meal.getMealCatgy(),"Turkey");
-      assertEquals(meal.getMealPrepTime(),prepTime);
-      assertEquals(false,hasDuplicate(plan,meal,0,EzMenuProfileDay.FRIDAY));
-      
-      meal = plan.getMeal(0, EzMenuProfileDay.SATURDAY);
-      assertEquals(meal.getMealCatgy(),"Veggie");
-      assertEquals(meal.getMealPrepTime(),prepTime);
-      assertEquals(false,hasDuplicate(plan,meal,0,EzMenuProfileDay.SATURDAY));
+      assertEquals(plan.isEmpty(),true);
 
    }
    
-   private boolean hasDuplicate(MenuPlan_Old plan, EzMenuMeal meal,int planWeek,int planDay) {
+   private boolean hasDuplicate(MenuPlan plan, EzMenuMeal meal,int planWeek,int planDay) {
       
       boolean hasDuplicate = false;
       

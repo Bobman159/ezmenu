@@ -36,17 +36,27 @@ Category Tests (Same Preparation Time used for All Meals & Profile)
 
 Description                                                                     Test Class
 --------------------------------------------------------------------------      -----------------------------
-No Meals for one category (test each category?)
-
+No Meals for one category (test each category)
+  * Should return full plan - using other categories
+  
 Not enough meals for all categories in profile                                  NotEnoughMealsAllCategoriesTest
-
-Not enough meals (3 categories), exact # of meals for remaining categories      
+  * Should be flagged as incomplete profile and partial plan returned (if possible)
+  
+Not enough meals (3 categories), exact # of meals for remaining categories
+  * Should be flagged as incomplete profile and partial plan returned (if possible)      
 
 Exact # of meals for all categories                                             ExactNumberMealsMenuPlanTest
 
 Not enough meals (2 categories), Exact # of meals (3 categories), 
 	more than enough meals (2 categories)
-	
+	*  Should return full plan (because the number of categories with not enough
+	   meals = number of categories with more than enough meals)
+
+Not enough meals (3 categories), Exact # of meals (2 categories), 
+  more than enough meals (2 categories)
+  *  Should return incomplete plan (because the number of categories with not enough
+     meals > number of categories with more than enough meals)
+     	
 Exact # of meals (3 categories),  more than enough meals (4 categories)         ExactMoreThanMealsMenuPlanTest
 
 More than enough meals all categories                                           MoreThanMealsMenuPlanTest
