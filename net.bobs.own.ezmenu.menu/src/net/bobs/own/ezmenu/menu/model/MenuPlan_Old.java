@@ -15,6 +15,7 @@ import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
 import net.bobs.own.ezmenu.meals.db.EzMenuMealMapper;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 
 public class MenuPlan_Old {
 
@@ -45,7 +46,7 @@ public class MenuPlan_Old {
 	   
 	   for (int weekIx = 0; weekIx < numWeeks; weekIx++) {
 
-	      for (int day = 0;day <= EzMenuProfileDay.SATURDAY;day++) {
+	      for (int day = 0;day <= WeekDay.Saturday.getDay();day++) {
 	         
 	         if (mealsList != null && mealsList.size() > 0) {
 	            mealsList.clear();
@@ -53,7 +54,7 @@ public class MenuPlan_Old {
 
 	         EzMenuProfileDay profDay = profile.getProfileDay(day);
 	         String weekCatgy = profDay.getCategory().toString();
-	         String weekPrepTime = profDay.getprepTime();
+	         String weekPrepTime = profDay.getprepTime().getPrepTime();
 	         
 //	         try {
 	            //TODO: Consider getting the meals information up front instead of as each day is processed
@@ -96,7 +97,7 @@ public class MenuPlan_Old {
       	         }
       	      }
 	         }
-         } //END for(int day = 0;day < EzMenuProfileDay.SATURDAY...)
+         } //END for(int day = 0;day < WeekDay.Saturday.getDay()...)
 	      
          logger.debug("Added menu for week " + numWeeks + " to plan");
 	      menuPlan.add(planWeek);

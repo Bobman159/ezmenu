@@ -10,7 +10,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.bobs.own.db.h2.pool.H2ConnectionPoolFactory;
@@ -25,6 +24,9 @@ import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
 import net.bobs.own.ezmenu.menu.model.MenuPlan;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.MealCategory;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.PrepTimes;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
 /*
 s *		*	Meal Plan generated 
@@ -41,15 +43,16 @@ class ExactNumberMealsMenuPlanTest {
 	private static EzMenuProfileMapper profMapper = null;
 	private static Logger logger = LogManager.getLogger(ExactNumberMealsMenuPlanTest.class.getName());
 	private MealDataGenerator mealGen = new MealDataGenerator(ezMenuDbTest);
-	private static int[][] profCategories = {{1,1,1,1,1,1,1}};
-	private static int[][] profPrepTimes = {{1,0,0,0,0},
-	                                        {0,1,0,0,0},
-	                                        {0,0,1,0,0},
-	                                        {0,0,0,1,0},
-	                                        {0,0,0,0,1},
-	                                        {0,1,0,0,0},
-	                                        {0,0,1,0,0},
-	                                       };
+
+   private static Object[][] profileMixed = {
+         {1,1,MealCategory.Beef,PrepTimes.TO15},
+         {1,1,MealCategory.Chicken,PrepTimes.TO30},
+         {1,1,MealCategory.Fish,PrepTimes.TO45},
+         {1,1,MealCategory.Pasta,PrepTimes.TO60},
+         {1,1,MealCategory.Pork,PrepTimes.PLUS60},
+         {1,1,MealCategory.Turkey,PrepTimes.TO30},
+         {1,1,MealCategory.Veggie,PrepTimes.TO45},
+   };
 	
 	private static Object[][] mealGenerate1Week = {{1,"Beef","0-15"},
 	                                               {1,"Chicken","16-30"},
@@ -96,7 +99,7 @@ class ExactNumberMealsMenuPlanTest {
 		ezMenuDbTest = new H2Database(pool);
 		ProfileDataGenerator profGen = new ProfileDataGenerator(ezMenuDbTest);
 		profGen.deleteProfiles();
-		profGen.generateProfiles(profCategories,profPrepTimes);
+		profGen.generateProfiles(profileMixed);
 		try {
 		   profMapper = EzMenuProfileMapper.makeMapper(ezMenuDbTest);
          List<ITable> profList = RunDMLRequestFactory.makeSelectRequest(profMapper);
@@ -130,32 +133,32 @@ class ExactNumberMealsMenuPlanTest {
 	   plan.generate();
       assertEquals(plan.isOk(),true);
 	   
-	   EzMenuMeal meal = plan.getMeal(0, EzMenuProfileDay.SUNDAY);
+	   EzMenuMeal meal = plan.getMeal(0, WeekDay.Sunday.getDay());
 	   assertEquals(plan.numberWeeks(),1);
 	   assertEquals(meal.getMealCatgy(),"Beef");
 	   assertEquals(meal.getMealPrepTime(),"0-15");
 	  
-	   meal = plan.getMeal(0, EzMenuProfileDay.MONDAY);
+	   meal = plan.getMeal(0, WeekDay.Monday.getDay());
 	   assertEquals(meal.getMealCatgy(),"Chicken");
 	   assertEquals(meal.getMealPrepTime(),"16-30");
 	   
-	   meal = plan.getMeal(0, EzMenuProfileDay.TUESDAY);
+	   meal = plan.getMeal(0, WeekDay.Tuesday.getDay());
 	   assertEquals(meal.getMealCatgy(),"Fish");
 	   assertEquals(meal.getMealPrepTime(),"31-45");
 	   
-	   meal = plan.getMeal(0, EzMenuProfileDay.WEDNESDAY);
+	   meal = plan.getMeal(0, WeekDay.Wednesday.getDay());
 	   assertEquals(meal.getMealCatgy(),"Pasta");
 	   assertEquals(meal.getMealPrepTime(),"46-60");
 
-	   meal = plan.getMeal(0, EzMenuProfileDay.THURSDAY);
+	   meal = plan.getMeal(0, WeekDay.Thursday.getDay());
 	   assertEquals(meal.getMealCatgy(),"Pork");
 	   assertEquals(meal.getMealPrepTime(),"61+");
 	   
-	   meal = plan.getMeal(0, EzMenuProfileDay.FRIDAY);
+	   meal = plan.getMeal(0, WeekDay.Friday.getDay());
 	   assertEquals(meal.getMealCatgy(),"Turkey");
 	   assertEquals(meal.getMealPrepTime(),"16-30");
 	   
-	   meal = plan.getMeal(0, EzMenuProfileDay.SATURDAY);
+	   meal = plan.getMeal(0, WeekDay.Saturday.getDay());
 	   assertEquals(meal.getMealCatgy(),"Veggie");
 	   assertEquals(meal.getMealPrepTime(),"31-45");
 	}
@@ -172,40 +175,40 @@ class ExactNumberMealsMenuPlanTest {
 	   
       assertEquals(plan.numberWeeks(),2);
       for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {
-         EzMenuMeal meal = plan.getMeal(weekIx, EzMenuProfileDay.SUNDAY);
+         EzMenuMeal meal = plan.getMeal(weekIx, WeekDay.Sunday.getDay());
    	   assertEquals(meal.getMealCatgy(),"Beef");
    	   assertEquals(meal.getMealPrepTime(),"0-15");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.SUNDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Sunday.getDay()));
    	   
-   	   meal = plan.getMeal(weekIx, EzMenuProfileDay.MONDAY);
+   	   meal = plan.getMeal(weekIx, WeekDay.Monday.getDay());
    	   assertEquals(meal.getMealCatgy(),"Chicken");
    	   assertEquals(meal.getMealPrepTime(),"16-30");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.MONDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Monday.getDay()));
    	      
-   	   meal = plan.getMeal(weekIx, EzMenuProfileDay.TUESDAY);
+   	   meal = plan.getMeal(weekIx, WeekDay.Tuesday.getDay());
    	   assertEquals(meal.getMealCatgy(),"Fish");
    	   assertEquals(meal.getMealPrepTime(),"31-45");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.TUESDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Tuesday.getDay()));
    	      
-   	   meal = plan.getMeal(weekIx, EzMenuProfileDay.WEDNESDAY);
+   	   meal = plan.getMeal(weekIx, WeekDay.Wednesday.getDay());
    	   assertEquals(meal.getMealCatgy(),"Pasta");
    	   assertEquals(meal.getMealPrepTime(),"46-60");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.WEDNESDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Wednesday.getDay()));
    
-   	   meal = plan.getMeal(weekIx, EzMenuProfileDay.THURSDAY);
+   	   meal = plan.getMeal(weekIx, WeekDay.Thursday.getDay());
    	   assertEquals(meal.getMealCatgy(),"Pork");
    	   assertEquals(meal.getMealPrepTime(),"61+");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.THURSDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Thursday.getDay()));
    	      
-   	   meal = plan.getMeal(weekIx, EzMenuProfileDay.FRIDAY);
+   	   meal = plan.getMeal(weekIx, WeekDay.Friday.getDay());
    	   assertEquals(meal.getMealCatgy(),"Turkey");
    	   assertEquals(meal.getMealPrepTime(),"16-30");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.FRIDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Friday.getDay()));
    	    
-   	   meal = plan.getMeal(weekIx, EzMenuProfileDay.SATURDAY);
+   	   meal = plan.getMeal(weekIx, WeekDay.Saturday.getDay());
    	   assertEquals(meal.getMealCatgy(),"Veggie");
    	   assertEquals(meal.getMealPrepTime(),"31-45");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.SATURDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Saturday.getDay()));
 
       }
 	}
@@ -221,40 +224,40 @@ class ExactNumberMealsMenuPlanTest {
       
       assertEquals(plan.numberWeeks(),3);
       for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {   
-         EzMenuMeal meal = plan.getMeal(weekIx, EzMenuProfileDay.SUNDAY);
+         EzMenuMeal meal = plan.getMeal(weekIx, WeekDay.Sunday.getDay());
          assertEquals(meal.getMealCatgy(),"Beef");
          assertEquals(meal.getMealPrepTime(),"0-15");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.SUNDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Sunday.getDay()));
          
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.MONDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Monday.getDay());
          assertEquals(meal.getMealCatgy(),"Chicken");
          assertEquals(meal.getMealPrepTime(),"16-30");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.MONDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Monday.getDay()));
             
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.TUESDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Tuesday.getDay());
          assertEquals(meal.getMealCatgy(),"Fish");
          assertEquals(meal.getMealPrepTime(),"31-45");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.TUESDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Tuesday.getDay()));
             
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.WEDNESDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Wednesday.getDay());
          assertEquals(meal.getMealCatgy(),"Pasta");
          assertEquals(meal.getMealPrepTime(),"46-60");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.WEDNESDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Wednesday.getDay()));
    
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.THURSDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Thursday.getDay());
          assertEquals(meal.getMealCatgy(),"Pork");
          assertEquals(meal.getMealPrepTime(),"61+");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.THURSDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Thursday.getDay()));
             
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.FRIDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Friday.getDay());
          assertEquals(meal.getMealCatgy(),"Turkey");
          assertEquals(meal.getMealPrepTime(),"16-30");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.FRIDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Friday.getDay()));
           
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.SATURDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Saturday.getDay());
          assertEquals(meal.getMealCatgy(),"Veggie");
          assertEquals(meal.getMealPrepTime(),"31-45");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.SATURDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Saturday.getDay()));
 
       }
 	}
@@ -270,40 +273,40 @@ class ExactNumberMealsMenuPlanTest {
       
       assertEquals(plan.numberWeeks(),4);
       for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {   
-         EzMenuMeal meal = plan.getMeal(weekIx, EzMenuProfileDay.SUNDAY);
+         EzMenuMeal meal = plan.getMeal(weekIx, WeekDay.Sunday.getDay());
          assertEquals(meal.getMealCatgy(),"Beef");
          assertEquals(meal.getMealPrepTime(),"0-15");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.SUNDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Sunday.getDay()));
          
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.MONDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Monday.getDay());
          assertEquals(meal.getMealCatgy(),"Chicken");
          assertEquals(meal.getMealPrepTime(),"16-30");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.MONDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Monday.getDay()));
             
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.TUESDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Tuesday.getDay());
          assertEquals(meal.getMealCatgy(),"Fish");
          assertEquals(meal.getMealPrepTime(),"31-45");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.TUESDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Tuesday.getDay()));
             
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.WEDNESDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Wednesday.getDay());
          assertEquals(meal.getMealCatgy(),"Pasta");
          assertEquals(meal.getMealPrepTime(),"46-60");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.WEDNESDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Wednesday.getDay()));
    
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.THURSDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Thursday.getDay());
          assertEquals(meal.getMealCatgy(),"Pork");
          assertEquals(meal.getMealPrepTime(),"61+");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.THURSDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Thursday.getDay()));
             
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.FRIDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Friday.getDay());
          assertEquals(meal.getMealCatgy(),"Turkey");
          assertEquals(meal.getMealPrepTime(),"16-30");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.FRIDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Friday.getDay()));
           
-         meal = plan.getMeal(weekIx, EzMenuProfileDay.SATURDAY);
+         meal = plan.getMeal(weekIx, WeekDay.Saturday.getDay());
          assertEquals(meal.getMealCatgy(),"Veggie");
          assertEquals(meal.getMealPrepTime(),"31-45");
-         assertEquals(false,hasDuplicate(plan,meal,weekIx,EzMenuProfileDay.SATURDAY));
+         assertEquals(false,hasDuplicate(plan,meal,weekIx,WeekDay.Saturday.getDay()));
 
       }
 	}
@@ -313,7 +316,7 @@ class ExactNumberMealsMenuPlanTest {
 	   boolean hasDuplicate = false;
 	   
 	   for (int week = 0;week < plan.numberWeeks();week++) {
-	      for(int day = 0;day < EzMenuProfileDay.SATURDAY; day++) {
+	      for(int day = 0;day < WeekDay.Saturday.getDay(); day++) {
 	         EzMenuMeal planMeal = plan.getMeal(week, day);
 	         if (planMeal.equals(meal)) {
 	            if (week == planWeek && day == planDay) {

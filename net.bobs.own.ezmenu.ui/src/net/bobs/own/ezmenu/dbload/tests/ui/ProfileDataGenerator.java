@@ -1,5 +1,6 @@
 package net.bobs.own.ezmenu.dbload.tests.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,17 +12,21 @@ import net.bobs.own.db.rundml.factory.RunDMLRequestFactory;
 import net.bobs.own.db.rundml.mapper.ITable;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.MealCategory;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.PrepTimes;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
 
 /**
- * A class to generate <code>EzMenuProfile</code> objects for testing.  Two mechanisms are provided for 
- * generating the objects:
- * <ul><li>Generate a large number of profiles using default values.</li> <li>Generate a specific list of profiles 
- * based on specific input</li></ul>
- * The main purpose of this class is to provide a facility to genearate 
+ * A class to generate <code>EzMenuProfile</code> objects for testing.  
+ * Two mechanisms are provided for generating the objects:
+ * <ul><li>Generate a large number of profiles using default values.</li> 
+ * <li>Generate a specific list of profiles based on specific input.</li>
+ * </ul>
+ * 
+ * The main purpose of this class is to provide a facility to generate 
  * test profiles for Menu Plan generation and validation.
- * @author Robert Anderson
- *
+ * 
  */
 public class ProfileDataGenerator {
 	
@@ -120,6 +125,8 @@ public class ProfileDataGenerator {
 		 * @param prepTimeMatrix  - the prepration time matrix to be used
 		 * @return - number of rows inserted into the database
 		 */
+		@Deprecated
+		//TODO: Remove this method once the new generateProfiles is working.
 		public int generateProfiles(int[][] categoryCounts, int[][] prepTimeMatrix) {
 			
 			EzMenuProfile profile = null;
@@ -146,7 +153,15 @@ public class ProfileDataGenerator {
 			}
 			
 			//Sanity Checks to make sure that the number of Categories = # of Preparation Times 
-			int numberPrepTimes = prepTimeMatrix.length;
+			int numberPrepTimes = 0;
+         for (int row = 0;row  < categoryCounts.length;row++) {
+            for (int col = 0; col < categoryCounts[row].length;col++) {
+               if (categoryCounts[row][col] != 0) {
+                  numberPrepTimes++;
+               }
+            }
+         }
+         
          int numberCategories = 0;
 			for (int row = 0;row  < categoryCounts.length;row++) {
 			   for (int col = 0; col < categoryCounts[row].length;col++) {
@@ -182,6 +197,35 @@ public class ProfileDataGenerator {
 				}
 			
 			return numberInserted;
+		}
+		
+		
+		public int generateProfiles(Object[][] profilesDefinition) {
+		   
+		   EzMenuProfile profile = null;
+         int numberInserted = 0;
+         int prepMatrixIx = 0;
+         
+         //Validate Category Constants Array Size
+         if (profilesDefinition.length <= 0) {
+            throw new IllegalArgumentException("Profile Definition is empty, it MUST be specified");
+         }
+         
+         try {
+            ArrayList<EzMenuProfile> gennedProfs = makeProfiles(profilesDefinition);
+            for (int profIx = 0;profIx < gennedProfs.size(); profIx++) {
+               profile = gennedProfs.get(profIx);
+               RunDMLRequestFactory.makeInsertRequest(profileMapper, profile);
+               numberInserted++;
+               writeToLog("Profile= " + profile.getName() + "added");
+            }
+            prepMatrixIx++;
+            } catch (RunDMLException hex) {
+               logger.debug(hex.getMessage(), hex);
+            }
+         
+         return numberInserted;
+		   
 		}
 		
 		/**
@@ -237,22 +281,92 @@ public class ProfileDataGenerator {
 			writeToLog("deletes method EXIT:");
 		}
 		
+		@Deprecated
+		//TODO: Remove this method once the new makeProfiles method is working.
 		private EzMenuProfile[] makeProfiles(int[][] categoriesMatrix, int[][] prepTimeMatrix) {
 
 		   int day = 0;
 		   int prepRow = 0;
 		   int prepCol = 0;
+		   int categoryRow = -1;
+         EzMenuProfile profile = null;
+
 		   String strPrepTime = prepTimes[0];
-		   
-		   int count = categoriesMatrix.length;
-		   EzMenuProfile[] profiles = new EzMenuProfile[count];
+         EzMenuProfile[] profiles = new EzMenuProfile[categoriesMatrix.length];  //OLD_WAY  
+         ArrayList<EzMenuProfile> profileList = new ArrayList<EzMenuProfile>();
+         
+         boolean NEW_WAY = false;
+         if (NEW_WAY) {
+            for (categoryRow = 0;categoryRow < categoriesMatrix.length ;categoryRow++) {
+               
+               profile = new EzMenuProfile(-1,"Profile_Name_" + categoryRow);
+               
+               for (int categoryCol = 0;categoryCol < categoriesMatrix[categoryRow].length;categoryCol++) {
+                  
+                  for (int numbDays = categoriesMatrix[categoryRow][categoryCol];
+                       numbDays > 0; numbDays--) {
+                     String category = categories[categoryCol];
+                     int numbPrepTime = prepTimeMatrix[prepRow][prepCol];
+                     
+                     /* Each non zero # in prepTimeMatrix = Day of week,
+                      *    1st non-zero # = Sunday
+                      *    2nd non-zero # = Monday
+                      *    3rd non-zero # = Tuesday
+                      *    ...
+                      *    6th non-zero # = Saturday   
+                      */
 
-		   for (int categoryRow = 0;categoryRow < count;categoryRow++) {
+                     //TODO: Verify prepCol & prepRow won't exceed bounds of the arrays they reference
+                     //Generate the Profile Day - Category & Preparation Time
+                     if (numbPrepTime > 0) {
+                        strPrepTime = prepTimes[prepCol];
+                     } else {
 
-		      if (day > EzMenuProfileDay.SATURDAY) {
+                        //find next non-zero entry
+                        boolean found = false;
+                        for (int nonZeroRow = prepRow, nonZeroCol = prepCol;
+                             nonZeroCol <= prepTimes.length; nonZeroCol++) {
+                           
+                           if (prepTimeMatrix[prepRow][nonZeroCol] != 0) {
+                              found = true;
+                              break;
+                           } 
+                        }  //END for(...;prepCol <= prepTimes.length....)
+                        
+                        if (found) {
+                           numbPrepTime = prepTimeMatrix[prepRow][prepCol];
+                           strPrepTime = prepTimes[prepCol];                           
+                        }
+                     }  //END if(numbPrepTime > 0)
+
+                     EzMenuProfileDay profDay = new EzMenuProfileDay(WeekDay.toDay(day),
+                                                                     MealCategory.toCategory(category),
+                                                                     PrepTimes.toPrepTime(strPrepTime));
+                     profile.addProfileDay(profDay);
+                     day++;
+
+                     }   //END for (....; numbDays > 0; 
+//                     prepRow++;
+//                     prepCol = 0;
+                     
+//                  }   //END for
+
+                  }   //END for (int categoryCol = 0;categoryCol <= categoriesMatrix[categoryRow].length;categoryCol++)
+               
+               profileList.add(profile);
+               
+            }   //END for (categoryRow = 0; categoryRow <=             
+         } else {
+
+         //OLD_WAY
+         //================================================================
+         int count = 0; 
+		   for (categoryRow = 0;categoryRow < count;categoryRow++) {
+
+		      if (day > WeekDay.Saturday.getDay()) {
 		         day = 0;
 		      }
-            EzMenuProfile profile = new EzMenuProfile(-1,"Profile_Name_" + categoryRow);
+            profile = new EzMenuProfile(-1,"Profile_Name_" + categoryRow);
 		      for (int categoryCol = 0;categoryCol < categoriesMatrix[categoryRow].length;categoryCol++) {
 		         
 		         int numbDays = categoriesMatrix[categoryRow][categoryCol];
@@ -277,17 +391,27 @@ public class ProfileDataGenerator {
    		               boolean done = false;
    		               while (done == false) {
    		                  prepCol++;
+   		                  writeToLog("prepRow= " + prepRow);
+   		                  writeToLog("prepCol= " + prepCol);
+   		                  if (prepCol >= prepTimes.length) {
+//   		                     done = true;
+   		                     break;
+   		                  }
    		                  if (prepTimeMatrix[prepRow][prepCol] != 0) {
    		                     done = true;
-   		                  }
+   		                  } 
    		               }
-   		               //Should I worry about prepCol > # of entries?
-   		               numbPrepTime = prepTimeMatrix[prepRow][prepCol];
-   		               strPrepTime = prepTimes[prepCol];
+   		               //Make sure the loop found an entry and didn't end because there
+   		               //the whole matrix was searched and no non-zero entries were found.
+   		               if (done == true) {
+      		               //Should I worry about prepCol > # of entries?
+      		               numbPrepTime = prepTimeMatrix[prepRow][prepCol];
+      		               strPrepTime = prepTimes[prepCol];
+   		               }
    		            }
-   		            EzMenuProfileDay profDay = new EzMenuProfileDay(EzMenuProfileDay.toDay(day),
-      	                                                            EzMenuProfileDay.toCategory(category),
-      	                                                           strPrepTime);
+   		            EzMenuProfileDay profDay = new EzMenuProfileDay(WeekDay.toDay(day),
+      	                                                            MealCategory.toCategory(category),
+      	                                                            PrepTimes.toPrepTime(strPrepTime));
       	            profile.addProfileDay(profDay);
       	            day++;
                      numbPrepTime--;
@@ -295,7 +419,7 @@ public class ProfileDataGenerator {
    		         }   //END while (numbDays > 0)
       		   
    		         //This works in my Unit Tests,but I am moving to the next row in PrepTimeMatrix before 
-   		         //it should? Ie. prepCol = 2 with all remaining entries are zero but I move to the next row in
+   		         //it should? IE. prepCol = 2 with all remaining entries are zero but I move to the next row in
    		         //PrepTimeMatrix. Not sure if this a problem...
 
       		      prepRow++;
@@ -308,8 +432,50 @@ public class ProfileDataGenerator {
             profiles[categoryRow] = profile;
             
 		   }   //END for (categoryRow = 0; categoryRow <= 
+        }
 		   
 		   return profiles;
+		}
+		
+		private ArrayList<EzMenuProfile> makeProfiles(Object[][] profilesDefinition) {
+         int currProfId = 0;
+         int dayOfWeek = WeekDay.Sunday.getDay();
+         EzMenuProfile prof = null;
+         ArrayList<EzMenuProfile> profsList = new ArrayList<EzMenuProfile>();
+         
+         /*ASSUME: profilesDefition has 7 entries (1 for each day of week) 
+          *        for each unique profileId.  If there are more or less 
+          *        than 7 entries for each unique profileId then 
+          *        UNKNOWN results may occur.
+          */        
+         for (int profRow = 0; profRow < profilesDefinition.length;profRow++) {
+            
+            Integer profId = (Integer) profilesDefinition[profRow][0];
+            if (currProfId != profId.intValue()) {
+               currProfId = profId.intValue();
+               if (prof != null) {
+                  profsList.add(prof);
+               }
+               prof = new EzMenuProfile(profRow,"DataGen_Profile_" + currProfId);
+               dayOfWeek = WeekDay.Sunday.getDay();
+            }              
+            Integer dayCountInt = (Integer) profilesDefinition[profRow][1];
+            MealCategory category = (MealCategory) profilesDefinition[profRow][2];
+            PrepTimes prepTime = (PrepTimes) profilesDefinition[profRow][3];
+            for (int dayCount = dayCountInt.intValue();dayCount > 0;dayCount--) {
+               EzMenuProfileDay profDay = new EzMenuProfileDay(WeekDay.toDay(dayOfWeek),
+                                                               category,prepTime);
+               prof.addProfileDay(profDay);
+               dayOfWeek++;
+            }
+            
+         }
+         
+         if (!(profsList.contains(prof))) {
+            profsList.add(prof);
+         }
+      
+         return profsList;
 		}
 		
 		private void writeToLog(String msg) {

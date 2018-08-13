@@ -26,6 +26,7 @@ import net.bobs.own.db.rundml.exception.RunDMLException;
 import net.bobs.own.db.rundml.factory.RunDMLRequestFactory;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
 import net.bobs.own.ezmenu.profile.editing.ui.CategoryEditingSupport;
 import net.bobs.own.ezmenu.profile.editing.ui.PrepTimeEditingSupport;
@@ -111,13 +112,13 @@ public class ProfileEditDialog extends TitleAreaDialog implements IValidatorCall
 		try {			
 			//Don't allow for create OR rename of profile to an existing profile name....
 			EzMenuProfile newProfile = new EzMenuProfile(profile.getId(),txtName.getText());
-			newProfile.addProfileDay(profile.getProfileDay(EzMenuProfileDay.SUNDAY));
-			newProfile.addProfileDay(profile.getProfileDay(EzMenuProfileDay.MONDAY));
-			newProfile.addProfileDay(profile.getProfileDay(EzMenuProfileDay.TUESDAY));
-			newProfile.addProfileDay(profile.getProfileDay(EzMenuProfileDay.WEDNESDAY));					
-			newProfile.addProfileDay(profile.getProfileDay(EzMenuProfileDay.THURSDAY));
-			newProfile.addProfileDay(profile.getProfileDay(EzMenuProfileDay.FRIDAY));
-			newProfile.addProfileDay(profile.getProfileDay(EzMenuProfileDay.SATURDAY));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Sunday.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Monday.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Tuesday.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Wednesday.getDay()));					
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Thursday.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Friday.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Saturday.getDay()));
 
 			if ((profExists == true) &&
 				(txtName.getText().equals(profile.getName()) == false)) {
@@ -224,9 +225,9 @@ public class ProfileEditDialog extends TitleAreaDialog implements IValidatorCall
 		prepViewer.setLabelProvider(new ColumnLabelProvider() {
 		@Override
 			public String getText(Object element) {
-				   
+				//TODO: Verify this works correctly in the UI (08/12/18)   
 				EzMenuProfileDay model = (EzMenuProfileDay) element;
-				String prepTime = model.getprepTime();
+				String prepTime = model.getprepTime().getPrepTime();
 				return prepTime;
 			}
 		});

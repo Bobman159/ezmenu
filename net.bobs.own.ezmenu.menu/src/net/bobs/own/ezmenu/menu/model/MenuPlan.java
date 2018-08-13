@@ -15,10 +15,11 @@ import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
 import net.bobs.own.ezmenu.meals.db.EzMenuMealMapper;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 
 public class MenuPlan {
 
-   public static enum MENUPLAN_STATUS {OK,PARTIAL,EMPTY}; 
+   private enum MENUPLAN_STATUS {OK,PARTIAL,EMPTY}; 
    private EzMenuProfile profile = null;
    private int numWeeks = 1;
    private ArrayList<Object> menuPlan = null;
@@ -54,14 +55,15 @@ public class MenuPlan {
       logger.debug("Generate meal plan for " + numWeeks + " weeks");
 
       for (int weekIx = 0; weekIx < numWeeks; weekIx++) {
-         for (int day = 0; day <= EzMenuProfileDay.SATURDAY; day++) {
+         for (int day = 0; day <= WeekDay.Saturday.getDay(); day++) {
 
             EzMenuProfileDay profDay = profile.getProfileDay(day);
             /* *  Get the meals information up front instead of as each day is processed
              * *  Call selectByCategoryPrep 1x to query the database.  The results of the query are
              *    saved to mealMap.  The profile  category.prepTime is used as the key for the list of meals
              */
-            String mealKey = profDay.getCategory().toString() + "." + profDay.getprepTime();
+            String mealKey = profDay.getCategory().toString() + "." + 
+                             profDay.getprepTime().getPrepTime();
             /* Get a list of Meals to process
                *  getMeals() should return a list of meals (and will handle category switching?)
                *  OR do it here? 

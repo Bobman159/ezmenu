@@ -21,6 +21,9 @@ import net.bobs.own.db.rundml.factory.RunDMLRequestFactory;
 import net.bobs.own.db.rundml.mapper.ITable;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.MealCategory;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.PrepTimes;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
 
 class EzMenuProfileDBTest {
@@ -81,14 +84,14 @@ class EzMenuProfileDBTest {
 	@Test
 	void testUpdate() {
 		//Test Update of Profile
-		EzMenuProfileDay[] updateDays = {new EzMenuProfileDay(EzMenuProfileDay.day.Sunday,EzMenuProfileDay.category.Veggie,"61+"),
-										 new EzMenuProfileDay(EzMenuProfileDay.day.Monday,EzMenuProfileDay.category.Beef,"0-15"),
-										 new EzMenuProfileDay(EzMenuProfileDay.day.Tuesday,EzMenuProfileDay.category.Turkey,"46-60"),
-										 new EzMenuProfileDay(EzMenuProfileDay.day.Wednesday,EzMenuProfileDay.category.Pasta,"16-30"),
-										 new EzMenuProfileDay(EzMenuProfileDay.day.Thursday,EzMenuProfileDay.category.Fish,"31-45"),
-										 new EzMenuProfileDay(EzMenuProfileDay.day.Friday,EzMenuProfileDay.category.Pasta,"0-15"),
-										 new EzMenuProfileDay(EzMenuProfileDay.day.Saturday,EzMenuProfileDay.category.Chicken,"46-60")
-										};
+		EzMenuProfileDay[] updateDays = {new EzMenuProfileDay(WeekDay.Sunday,MealCategory.Veggie,PrepTimes.PLUS60),
+                        					new EzMenuProfileDay(WeekDay.Monday,MealCategory.Beef,PrepTimes.TO15),
+                        					new EzMenuProfileDay(WeekDay.Tuesday,MealCategory.Turkey,PrepTimes.TO60),
+                        					new EzMenuProfileDay(WeekDay.Wednesday,MealCategory.Pasta,PrepTimes.TO30),
+                        					new EzMenuProfileDay(WeekDay.Thursday,MealCategory.Fish,PrepTimes.TO45),
+                        					new EzMenuProfileDay(WeekDay.Friday,MealCategory.Pasta,PrepTimes.TO15),
+                        					new EzMenuProfileDay(WeekDay.Saturday,MealCategory.Chicken,PrepTimes.TO60)
+										         };
 		
 		try {
 			List<ITable> profList = RunDMLRequestFactory.makeSelectRequest(profMapper);
@@ -114,11 +117,13 @@ class EzMenuProfileDBTest {
 				assertEquals(updatedProf.getId(),prof.getId());				
 				assertEquals(updatedProf.getName(),profName);
 				
-				for (int day = EzMenuProfileDay.SUNDAY; day < updateDays.length;day++) {
+				for (int day = WeekDay.Sunday.getDay(); day < updateDays.length;day++) {
 					
 					assertEquals(updatedProf.getProfileDay(day).getDay(),updateDays[day].getDay());
-					assertEquals(updatedProf.getProfileDay(day).getCategory(),updateDays[day].getCategory());					
-					assertEquals(updatedProf.getProfileDay(day).getprepTime(),updateDays[day].getprepTime());
+					assertEquals(updatedProf.getProfileDay(day).getCategory(),
+					             updateDays[day].getCategory());					
+					assertEquals(updatedProf.getProfileDay(day).getprepTime(),
+					             updateDays[day].getprepTime());
 
 				}
 			}

@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,29 +21,32 @@ import net.bobs.own.ezmenu.dbload.tests.ui.MealDataGenerator;
 import net.bobs.own.ezmenu.dbload.tests.ui.ProfileDataGenerator;
 import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
 import net.bobs.own.ezmenu.menu.model.MenuPlan;
-import net.bobs.own.ezmenu.menu.model.MenuPlan.MENUPLAN_STATUS;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.MealCategory;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.PrepTimes;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileMapper;
 
 class NotEnoughMealsAllCategoriesTest {
 
    private static H2Database ezMenuDbTest = null;
+   private static ProfileDataGenerator profGen = null;
    private static EzMenuProfile profile = null;
    private static EzMenuProfileMapper profMapper = null;
    private MealDataGenerator mealGen = new MealDataGenerator(ezMenuDbTest);
-   private static int[][] profCategories = {{1,1,1,1,1,1,1}};
-   private static int[][] profPrepTimes = {{1,0,0,0,0},
-                                           {1,0,0,0,0},
-                                           {1,0,0,0,0},
-                                           {1,0,0,0,0},
-                                           {1,0,0,0,0},
-                                           {1,0,0,0,0},
-                                           {1,0,0,0,0},
-                                          };
    
+   private static Object[][] noDaysProfile = {
+         {1,1,MealCategory.Beef,PrepTimes.TO15},
+         {1,1,MealCategory.Chicken,PrepTimes.TO15},
+         {1,1,MealCategory.Fish,PrepTimes.TO15},
+         {1,1,MealCategory.Pasta,PrepTimes.TO15},
+         {1,1,MealCategory.Pork,PrepTimes.TO15},
+         {1,1,MealCategory.Turkey,PrepTimes.TO15},
+         {1,1,MealCategory.Veggie,PrepTimes.TO15},
+   };
    private static String prepTime = "0-15";
-   private static Object[][] mealGenerate1Week = {{0,"Beef",prepTime},
+   private static Object[][] noMealGenerate = {{0,"Beef",prepTime},
                                                   {0,"Chicken",prepTime},
                                                   {0,"Fish",prepTime},
                                                   {0,"Pasta",prepTime},
@@ -53,15 +54,25 @@ class NotEnoughMealsAllCategoriesTest {
                                                   {0,"Turkey",prepTime},
                                                   {0,"Veggie",prepTime}
                                                  };
-   
-   private static Object[][] mealGenerate2Weeks = {{4,"Beef",prepTime},
-                                                  {3,"Chicken",prepTime},
-                                                  {3,"Fish",prepTime},
-                                                  {3,"Pasta",prepTime},
-                                                  {6,"Pork",prepTime},
-                                                  {3,"Turkey",prepTime},
-                                                  {5,"Veggie",prepTime}
-                                                 };
+  
+   private static Object[][] insufficientDaysProfile = {
+         {1,1,MealCategory.Fish,PrepTimes.TO45},
+         {1,1,MealCategory.Fish,PrepTimes.TO60},
+         {1,1,MealCategory.Pasta,PrepTimes.TO30}, 
+         {1,1,MealCategory.Pasta,PrepTimes.TO60},          
+         {1,1,MealCategory.Veggie,PrepTimes.TO15}, 
+         {1,1,MealCategory.Veggie,PrepTimes.TO30}, 
+         {1,1,MealCategory.Veggie,PrepTimes.TO45} 
+   };
+
+   private static Object[][] insufficientMealGenerate = {{0,"Beef",prepTime},
+                                                         {0,"Chicken",prepTime},
+                                                         {1,"Fish","31-45"},
+                                                         {0,"Pasta",prepTime},
+                                                         {0,"Pork",prepTime},
+                                                         {0,"Turkey",prepTime},
+                                                         {2,"Veggie",prepTime}
+                                                       };
    
    private static Object[][] mealGenerate3Weeks = {{4,"Beef",prepTime},
                                                    {4,"Chicken",prepTime},
@@ -87,17 +98,7 @@ class NotEnoughMealsAllCategoriesTest {
             "C:\\Users\\Robert Anderson\\git\\ezmenu\\net.bobs.own.ezmenu\\db\\ezmenu_test",
             "EzMenuUser", "Aqpk3728", "10", "ezmenuTest.pool");      
       ezMenuDbTest = new H2Database(pool);
-      ProfileDataGenerator profGen = new ProfileDataGenerator(ezMenuDbTest);
-      profGen.deleteProfiles();
-      profGen.generateProfiles(profCategories,profPrepTimes);
-      try {
-         profMapper = EzMenuProfileMapper.makeMapper(ezMenuDbTest);
-         List<ITable> profList = RunDMLRequestFactory.makeSelectRequest(profMapper);
-         profile = (EzMenuProfile) profList.get(0);
-      } catch (RunDMLException e) {
-         e.printStackTrace();
-      }
-      
+      profGen = new ProfileDataGenerator(ezMenuDbTest);
    }
 
    @AfterAll
@@ -114,11 +115,24 @@ class NotEnoughMealsAllCategoriesTest {
 
    @Test
    void testNoMealsInDatabase() {
+      
+      generateProfiles(noDaysProfile);
       mealGen.deleteMeals();     
-      mealGen.generateMeals(mealGenerate1Week);
+      mealGen.generateMeals(noMealGenerate);
       MenuPlan plan = new MenuPlan(profile,1);
       plan.generate();
       assertEquals(plan.isEmpty(),true);
+
+   }
+
+   @Test
+   void testInsufficientMealsInDatabase() {
+      
+      generateProfiles(insufficientDaysProfile);
+      mealGen.deleteMeals();     
+      mealGen.generateMeals(insufficientMealGenerate);
+      MenuPlan plan = new MenuPlan(profile,1);
+      plan.generate();
 
    }
    
@@ -127,7 +141,7 @@ class NotEnoughMealsAllCategoriesTest {
       boolean hasDuplicate = false;
       
       for (int week = 0;week < plan.numberWeeks();week++) {
-         for(int day = 0;day < EzMenuProfileDay.SATURDAY; day++) {
+         for(int day = 0;day < WeekDay.Saturday.getDay(); day++) {
             EzMenuMeal planMeal = plan.getMeal(week, day);
             if (planMeal.equals(meal)) {
                if (week == planWeek && day == planDay) {
@@ -142,6 +156,19 @@ class NotEnoughMealsAllCategoriesTest {
       }
       
       return hasDuplicate;
+   }
+   
+   private void generateProfiles(Object[][] profileDefinition) {
+ 
+      profGen.deleteProfiles();
+      profGen.generateProfiles(profileDefinition);
+      try {
+         profMapper = EzMenuProfileMapper.makeMapper(ezMenuDbTest);
+         List<ITable> profList = RunDMLRequestFactory.makeSelectRequest(profMapper);
+         profile = (EzMenuProfile) profList.get(0);
+      } catch (RunDMLException e) {
+         e.printStackTrace();
+      }
    }
 
 

@@ -6,6 +6,9 @@ import java.util.List;
 import org.eclipse.jface.viewers.TableViewer;
 
 import net.bobs.own.db.rundml.mapper.ITable;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.MealCategory;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.PrepTimes;
+import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
 
 /**
  * Model class for an EzMenu Profile.  An EzMenu profile consists of 7 <code>
@@ -83,20 +86,13 @@ public class EzMenuProfile implements ITable  {
 	
 	private void createDefaultProfile() {
 		
-		profileDays.add(new EzMenuProfileDay(EzMenuProfileDay.day.Sunday,
-											EzMenuProfileDay.category.Beef,"0-15"));
-		profileDays.add(new EzMenuProfileDay(EzMenuProfileDay.day.Monday,
-											EzMenuProfileDay.category.Beef,"0-15"));
-		profileDays.add(new EzMenuProfileDay(EzMenuProfileDay.day.Tuesday,
-											EzMenuProfileDay.category.Beef,"0-15"));
-		profileDays.add(new EzMenuProfileDay(EzMenuProfileDay.day.Wednesday,
-											EzMenuProfileDay.category.Beef,"0-15"));
-		profileDays.add(new EzMenuProfileDay(EzMenuProfileDay.day.Thursday,
-											EzMenuProfileDay.category.Beef,"0-15"));
-		profileDays.add(new EzMenuProfileDay(EzMenuProfileDay.day.Friday,
-											EzMenuProfileDay.category.Beef,"0-15"));
-		profileDays.add(new EzMenuProfileDay(EzMenuProfileDay.day.Saturday,
-											EzMenuProfileDay.category.Beef,"0-15"));
+		profileDays.add(new EzMenuProfileDay(WeekDay.Sunday,MealCategory.Beef,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.Monday,MealCategory.Beef,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.Tuesday,MealCategory.Beef,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.Wednesday,MealCategory.Beef,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.Thursday,MealCategory.Beef,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.Friday,MealCategory.Beef,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.Saturday,MealCategory.Beef,PrepTimes.TO15));
 	}
 	
 }

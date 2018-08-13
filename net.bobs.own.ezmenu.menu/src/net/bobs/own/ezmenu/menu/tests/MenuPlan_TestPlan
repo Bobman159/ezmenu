@@ -41,7 +41,8 @@ No Meals for one category (test each category)
   
 Not enough meals for all categories in profile                                  NotEnoughMealsAllCategoriesTest
   * Should be flagged as incomplete profile and partial plan returned (if possible)
-  
+    * No meals in database all categories
+    * Some meals but not enough to complete plan (Status = Partial)
 Not enough meals (3 categories), exact # of meals for remaining categories
   * Should be flagged as incomplete profile and partial plan returned (if possible)      
 
@@ -58,9 +59,12 @@ Not enough meals (3 categories), Exact # of meals (2 categories),
      meals > number of categories with more than enough meals)
      	
 Exact # of meals (3 categories),  more than enough meals (4 categories)         ExactMoreThanMealsMenuPlanTest
-
+  * Should return a full plan because there are the exact number or more
+    meals than are required.
+    
 More than enough meals all categories                                           MoreThanMealsMenuPlanTest
-
+  * Should return a full plan because there are more than enough meals
+  
 ================================================================================
 Category & Preparation Time Tests
 ================================================================================
