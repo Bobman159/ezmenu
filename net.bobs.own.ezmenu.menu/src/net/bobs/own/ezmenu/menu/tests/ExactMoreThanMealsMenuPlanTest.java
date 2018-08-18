@@ -124,7 +124,7 @@ class ExactMoreThanMealsMenuPlanTest {
       assertEquals(plan.isOk(),true);
       
       EzMenuMeal meal = plan.getMeal(0, WeekDay.Sunday.getDay());
-      assertEquals(plan.numberWeeks(),1);
+      assertEquals(plan.planSize(),1);
       assertEquals(meal.getMealCatgy(),"Beef");
       assertEquals(meal.getMealPrepTime(),"61+");
       assertEquals(false,hasDuplicate(plan,meal,0,WeekDay.Sunday.getDay()));
@@ -169,8 +169,8 @@ class ExactMoreThanMealsMenuPlanTest {
       plan.generate();
       assertEquals(plan.isOk(),true);
       
-      assertEquals(plan.numberWeeks(),2);
-      for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {
+      assertEquals(plan.planSize(),2);
+      for (int weekIx = 0;weekIx < plan.planSize();weekIx++) {
          EzMenuMeal meal = plan.getMeal(weekIx, WeekDay.Sunday.getDay());
          assertEquals(meal.getMealCatgy(),"Beef");
          assertEquals(meal.getMealPrepTime(),"61+");
@@ -219,8 +219,8 @@ class ExactMoreThanMealsMenuPlanTest {
       plan.generate();
       assertEquals(plan.isOk(),true);
       
-      assertEquals(plan.numberWeeks(),3);
-      for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {   
+      assertEquals(plan.planSize(),3);
+      for (int weekIx = 0;weekIx < plan.planSize();weekIx++) {   
          EzMenuMeal meal = plan.getMeal(weekIx, WeekDay.Sunday.getDay());
          assertEquals(meal.getMealCatgy(),"Beef");
          assertEquals(meal.getMealPrepTime(),"61+");
@@ -268,8 +268,8 @@ class ExactMoreThanMealsMenuPlanTest {
       plan.generate();
       assertEquals(plan.isOk(),true);
       
-      assertEquals(plan.numberWeeks(),4);
-      for (int weekIx = 0;weekIx < plan.numberWeeks();weekIx++) {   
+      assertEquals(plan.planSize(),4);
+      for (int weekIx = 0;weekIx < plan.planSize();weekIx++) {   
          EzMenuMeal meal = plan.getMeal(weekIx, WeekDay.Sunday.getDay());
          assertEquals(meal.getMealCatgy(),"Beef");
          assertEquals(meal.getMealPrepTime(),"61+");
@@ -312,7 +312,7 @@ class ExactMoreThanMealsMenuPlanTest {
       
       boolean hasDuplicate = false;
       
-      for (int week = 0;week < plan.numberWeeks();week++) {
+      for (int week = 0;week < plan.planSize();week++) {
          for(int day = 0;day < WeekDay.Saturday.getDay(); day++) {
             EzMenuMeal planMeal = plan.getMeal(week, day);
             if (planMeal.equals(meal)) {

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.bobs.own.db.h2.pool.H2ConnectionPoolFactory;
@@ -22,7 +23,6 @@ import net.bobs.own.ezmenu.dbload.tests.ui.ProfileDataGenerator;
 import net.bobs.own.ezmenu.meals.db.EzMenuMeal;
 import net.bobs.own.ezmenu.menu.model.MenuPlan;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfile;
-import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.MealCategory;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.PrepTimes;
 import net.bobs.own.ezmenu.profile.db.EzMenuProfileDay.WeekDay;
@@ -36,7 +36,7 @@ class NotEnoughMealsAllCategoriesTest {
    private static EzMenuProfileMapper profMapper = null;
    private MealDataGenerator mealGen = new MealDataGenerator(ezMenuDbTest);
    
-   private static Object[][] noDaysProfile = {
+   private static Object[][] noMealsProfile = {
          {1,1,MealCategory.Beef,PrepTimes.TO15},
          {1,1,MealCategory.Chicken,PrepTimes.TO15},
          {1,1,MealCategory.Fish,PrepTimes.TO15},
@@ -45,6 +45,7 @@ class NotEnoughMealsAllCategoriesTest {
          {1,1,MealCategory.Turkey,PrepTimes.TO15},
          {1,1,MealCategory.Veggie,PrepTimes.TO15},
    };
+   
    private static String prepTime = "0-15";
    private static Object[][] noMealGenerate = {{0,"Beef",prepTime},
                                                   {0,"Chicken",prepTime},
@@ -55,7 +56,7 @@ class NotEnoughMealsAllCategoriesTest {
                                                   {0,"Veggie",prepTime}
                                                  };
   
-   private static Object[][] insufficientDaysProfile = {
+   private static Object[][] incompletePlan1WeekProfile = {
          {1,1,MealCategory.Fish,PrepTimes.TO45},
          {1,1,MealCategory.Fish,PrepTimes.TO60},
          {1,1,MealCategory.Pasta,PrepTimes.TO30}, 
@@ -64,8 +65,18 @@ class NotEnoughMealsAllCategoriesTest {
          {1,1,MealCategory.Veggie,PrepTimes.TO30}, 
          {1,1,MealCategory.Veggie,PrepTimes.TO45} 
    };
+   
+   private static Object[][] incompletePlan2WeeksProfile = {
+         {1,1,MealCategory.Chicken,PrepTimes.TO45},
+         {1,1,MealCategory.Fish,PrepTimes.TO60},
+         {1,1,MealCategory.Pasta,PrepTimes.TO30}, 
+         {1,1,MealCategory.Pork,PrepTimes.TO60},          
+         {1,1,MealCategory.Turkey,PrepTimes.TO15}, 
+         {1,1,MealCategory.Veggie,PrepTimes.TO30}, 
+         {1,1,MealCategory.Veggie,PrepTimes.TO45} 
+   };
 
-   private static Object[][] insufficientMealGenerate = {{0,"Beef",prepTime},
+   private static Object[][] incompletePlan1WeekMeals = {{0,"Beef",prepTime},
                                                          {0,"Chicken",prepTime},
                                                          {1,"Fish","31-45"},
                                                          {0,"Pasta",prepTime},
@@ -74,14 +85,24 @@ class NotEnoughMealsAllCategoriesTest {
                                                          {2,"Veggie",prepTime}
                                                        };
    
-   private static Object[][] mealGenerate3Weeks = {{4,"Beef",prepTime},
-                                                   {4,"Chicken",prepTime},
-                                                   {4,"Fish",prepTime},
-                                                   {4,"Pasta",prepTime},
-                                                   {4,"Pork",prepTime},
-                                                   {4,"Turkey",prepTime},
-                                                   {4,"Veggie",prepTime}
+   private static Object[][] incompletePlan2WeeksMeals = {{0,"Beef",PrepTimes.TO15.getPrepTime()},
+                                                   {1,"Chicken",PrepTimes.TO45.getPrepTime()},
+                                                   {1,"Fish",PrepTimes.TO60.getPrepTime()},
+                                                   {1,"Pasta",PrepTimes.TO30.getPrepTime()},
+                                                   {1,"Pork",PrepTimes.TO60.getPrepTime()},
+                                                   {1,"Turkey",PrepTimes.TO15.getPrepTime()},
+                                                   {2,"Veggie",PrepTimes.TO45.getPrepTime()}
                                                   };
+   
+   private static Object[][] incompletePlan3WeeksMeals = {
+         {3,"Beef",PrepTimes.TO15.getPrepTime()},
+         {3,"Chicken",PrepTimes.TO45.getPrepTime()},
+         {3,"Fish",PrepTimes.TO60.getPrepTime()},
+         {3,"Pasta",PrepTimes.TO30.getPrepTime()},
+         {2,"Pork",PrepTimes.TO60.getPrepTime()},
+         {3,"Turkey",PrepTimes.TO15.getPrepTime()},
+         {3,"Veggie",PrepTimes.TO45.getPrepTime()}
+        };
    
     private static Object[][] mealGenerate4Weeks = {{5,"Beef",prepTime},
                                                     {5,"Chicken",prepTime},
@@ -113,26 +134,49 @@ class NotEnoughMealsAllCategoriesTest {
    void tearDown() throws Exception {
    }
 
-   @Test
+   @Disabled
    void testNoMealsInDatabase() {
       
-      generateProfiles(noDaysProfile);
+      generateProfiles(noMealsProfile);
       mealGen.deleteMeals();     
       mealGen.generateMeals(noMealGenerate);
       MenuPlan plan = new MenuPlan(profile,1);
       plan.generate();
       assertEquals(plan.isEmpty(),true);
+      assertEquals(plan.planSize(),0);
+      assertEquals(plan.sizePlanWeek(1),-1);
 
    }
 
-   @Test
-   void testInsufficientMealsInDatabase() {
+   /*
+    * Test an incomplete Meal Plan is generated for 1 week 
+    * with only 1 week generated.
+    */
+   @Disabled
+   void testIncompletePlan1Week() {
       
-      generateProfiles(insufficientDaysProfile);
+      generateProfiles(incompletePlan1WeekProfile);
       mealGen.deleteMeals();     
-      mealGen.generateMeals(insufficientMealGenerate);
+      mealGen.generateMeals(incompletePlan1WeekMeals);
       MenuPlan plan = new MenuPlan(profile,1);
       plan.generate();
+      assertEquals(plan.isIncomplete(),true);
+      assertEquals(plan.planSize(),1);
+      assertEquals(plan.sizePlanWeek(1),1);
+
+   }
+   
+   @Disabled
+   void testIncompletePlan2Weeks() {
+      
+      generateProfiles(incompletePlan2WeeksProfile);
+      mealGen.deleteMeals();     
+      mealGen.generateMeals(incompletePlan2WeeksMeals);
+      MenuPlan plan = new MenuPlan(profile,2);
+      plan.generate();
+      assertEquals(plan.isIncomplete(),true);
+      assertEquals(plan.planSize(),1);
+      assertEquals(plan.sizePlanWeek(1),7);
 
    }
    
@@ -140,7 +184,7 @@ class NotEnoughMealsAllCategoriesTest {
       
       boolean hasDuplicate = false;
       
-      for (int week = 0;week < plan.numberWeeks();week++) {
+      for (int week = 0;week < plan.planSize();week++) {
          for(int day = 0;day < WeekDay.Saturday.getDay(); day++) {
             EzMenuMeal planMeal = plan.getMeal(week, day);
             if (planMeal.equals(meal)) {
@@ -171,5 +215,24 @@ class NotEnoughMealsAllCategoriesTest {
       }
    }
 
+   /*
+    * Test an incomplete Meal Plan is generated with 7
+    * meals in the plan.
+    */
+   @Test
+   void testIncompletePlan3Weeks() {
+      
+      generateProfiles(incompletePlan2WeeksProfile);
+      mealGen.deleteMeals();     
+      mealGen.generateMeals(incompletePlan3WeeksMeals);
+      MenuPlan plan = new MenuPlan(profile,3);
+      plan.generate();
+      assertEquals(plan.isIncomplete(),true);
+      assertEquals(plan.planSize(),3);
+      assertEquals(plan.sizePlanWeek(1),7);
+      assertEquals(plan.sizePlanWeek(2),7);
+      System.out.println("planWeek3.size= " + plan.sizePlanWeek(3));
+      assertEquals(plan.sizePlanWeek(3),6);
 
+   }
 }
