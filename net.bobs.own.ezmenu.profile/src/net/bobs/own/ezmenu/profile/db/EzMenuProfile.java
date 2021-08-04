@@ -86,13 +86,13 @@ public class EzMenuProfile implements ITable  {
 	
 	private void createDefaultProfile() {
 		
-		profileDays.add(new EzMenuProfileDay(WeekDay.Sunday,MealCategory.Beef,PrepTimes.TO15));
-		profileDays.add(new EzMenuProfileDay(WeekDay.Monday,MealCategory.Beef,PrepTimes.TO15));
-		profileDays.add(new EzMenuProfileDay(WeekDay.Tuesday,MealCategory.Beef,PrepTimes.TO15));
-		profileDays.add(new EzMenuProfileDay(WeekDay.Wednesday,MealCategory.Beef,PrepTimes.TO15));
-		profileDays.add(new EzMenuProfileDay(WeekDay.Thursday,MealCategory.Beef,PrepTimes.TO15));
-		profileDays.add(new EzMenuProfileDay(WeekDay.Friday,MealCategory.Beef,PrepTimes.TO15));
-		profileDays.add(new EzMenuProfileDay(WeekDay.Saturday,MealCategory.Beef,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.SUNDAY,MealCategory.BEEF,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.MONDAY,MealCategory.BEEF,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.TUESDAY,MealCategory.BEEF,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.WEDNESDAY,MealCategory.BEEF,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.THURSDAY,MealCategory.BEEF,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.FRIDAY,MealCategory.BEEF,PrepTimes.TO15));
+		profileDays.add(new EzMenuProfileDay(WeekDay.SATURDAY,MealCategory.BEEF,PrepTimes.TO15));
 	}
 	
 }

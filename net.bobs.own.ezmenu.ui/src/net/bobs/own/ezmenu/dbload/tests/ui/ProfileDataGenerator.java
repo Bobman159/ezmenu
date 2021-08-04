@@ -363,7 +363,7 @@ public class ProfileDataGenerator {
          int count = 0; 
 		   for (categoryRow = 0;categoryRow < count;categoryRow++) {
 
-		      if (day > WeekDay.Saturday.getDay()) {
+		      if (day > WeekDay.SATURDAY.getDay()) {
 		         day = 0;
 		      }
             profile = new EzMenuProfile(-1,"Profile_Name_" + categoryRow);
@@ -439,7 +439,7 @@ public class ProfileDataGenerator {
 		
 		private ArrayList<EzMenuProfile> makeProfiles(Object[][] profilesDefinition) {
          int currProfId = 0;
-         int dayOfWeek = WeekDay.Sunday.getDay();
+         int dayOfWeek = WeekDay.SUNDAY.getDay();
          EzMenuProfile prof = null;
          ArrayList<EzMenuProfile> profsList = new ArrayList<EzMenuProfile>();
          
@@ -457,7 +457,7 @@ public class ProfileDataGenerator {
                   profsList.add(prof);
                }
                prof = new EzMenuProfile(profRow,"DataGen_Profile_" + currProfId);
-               dayOfWeek = WeekDay.Sunday.getDay();
+               dayOfWeek = WeekDay.SUNDAY.getDay();
             }              
             Integer dayCountInt = (Integer) profilesDefinition[profRow][1];
             MealCategory category = (MealCategory) profilesDefinition[profRow][2];

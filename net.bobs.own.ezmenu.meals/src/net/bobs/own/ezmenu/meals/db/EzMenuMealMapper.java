@@ -32,7 +32,7 @@ public class EzMenuMealMapper extends AbstractTableMapper {
 		return mapper;
 		
 	}
-	
+
 	static public EzMenuMealMapper getMapper() {
 
 		return mapper;

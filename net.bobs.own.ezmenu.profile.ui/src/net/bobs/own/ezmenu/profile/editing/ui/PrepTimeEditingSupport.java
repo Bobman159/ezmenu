@@ -68,7 +68,7 @@ public class PrepTimeEditingSupport extends EditingSupport {
 	protected Object getValue(Object element) {
 		EzMenuProfileDay rowModel = (EzMenuProfileDay) element;
 //		return rowModel.indexOfPrepTime(rowModel.getprepTime());
-		return rowModel.getprepTime().getPrepTime();
+		return rowModel.getprepTime().toString();
 	}
 
 	//TODO: Verify this works successfully in UI

@@ -1,0 +1,96 @@
+2020-11-27 12:01:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MEALS" not found; SQL statement:
+select meal.MEAL_ID, meal.MEAL_CATGY, meal.MEAL_NAME
+from MEALS meal
+where meal.MEAL_CATGY = ?
+limit ? [42102-199]
+2020-11-27 12:04:16 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MEALS" not found; SQL statement:
+select meal.MEAL_ID, meal.MEAL_CATGY, meal.MEAL_NAME
+from MEALS meal
+where meal.MEAL_CATGY = ?
+limit ? [42102-199]
+2020-11-27 12:10:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Schema "EZMENU" not found; SQL statement:
+select meal.MEAL_ID, meal.MEAL_CATGY, meal.MEAL_NAME
+from EZMENU.MEALS meal
+where meal.MEAL_CATGY = ?
+limit ? [90079-199]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:573)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.command.Parser.readTableFilter(Parser.java:1864)
+	at org.h2.command.Parser.parseSelectSimpleFromPart(Parser.java:2641)
+	at org.h2.command.Parser.parseSelectSimple(Parser.java:2788)
+	at org.h2.command.Parser.parseSelectSub(Parser.java:2636)
+	at org.h2.command.Parser.parseSelectUnion(Parser.java:2469)
+	at org.h2.command.Parser.parseSelect(Parser.java:2440)
+	at org.h2.command.Parser.parsePrepared(Parser.java:814)
+	at org.h2.command.Parser.parse(Parser.java:788)
+	at org.h2.command.Parser.parse(Parser.java:760)
+	at org.h2.command.Parser.prepareCommand(Parser.java:683)
+	at org.h2.engine.Session.prepareLocal(Session.java:627)
+	at org.h2.engine.Session.prepareCommand(Session.java:565)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1292)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:77)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:349)
+	at com.querydsl.sql.AbstractSQLQuery.getPreparedStatement(AbstractSQLQuery.java:318)
+	at com.querydsl.sql.AbstractSQLQuery.fetch(AbstractSQLQuery.java:439)
+	at com.bobman159.querydsl.poc.QueryDSLPoc_Main.main(QueryDSLPoc_Main.java:66)
+2020-11-27 12:20:29 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Schema "EZMENU" not found; SQL statement:
+select meal.MEAL_ID, meal.MEAL_CATGY, meal.MEAL_NAME
+from EZMENU.MEALS meal
+where meal.MEAL_CATGY = ?
+limit ? [90079-199]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:573)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.command.Parser.readTableFilter(Parser.java:1864)
+	at org.h2.command.Parser.parseSelectSimpleFromPart(Parser.java:2641)
+	at org.h2.command.Parser.parseSelectSimple(Parser.java:2788)
+	at org.h2.command.Parser.parseSelectSub(Parser.java:2636)
+	at org.h2.command.Parser.parseSelectUnion(Parser.java:2469)
+	at org.h2.command.Parser.parseSelect(Parser.java:2440)
+	at org.h2.command.Parser.parsePrepared(Parser.java:814)
+	at org.h2.command.Parser.parse(Parser.java:788)
+	at org.h2.command.Parser.parse(Parser.java:760)
+	at org.h2.command.Parser.prepareCommand(Parser.java:683)
+	at org.h2.engine.Session.prepareLocal(Session.java:627)
+	at org.h2.engine.Session.prepareCommand(Session.java:565)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1292)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:77)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:349)
+	at com.querydsl.sql.AbstractSQLQuery.getPreparedStatement(AbstractSQLQuery.java:318)
+	at com.querydsl.sql.AbstractSQLQuery.fetch(AbstractSQLQuery.java:439)
+	at com.bobman159.querydsl.poc.QueryDSLPoc_Main.main(QueryDSLPoc_Main.java:66)
+2020-11-27 12:25:15 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Schema "EZMENU" not found; SQL statement:
+select meal.MEAL_ID, meal.MEAL_CATGY, meal.MEAL_NAME
+from EZMENU.MEALS meal
+where meal.MEAL_CATGY = ?
+limit ? [90079-199]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:573)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.command.Parser.readTableFilter(Parser.java:1864)
+	at org.h2.command.Parser.parseSelectSimpleFromPart(Parser.java:2641)
+	at org.h2.command.Parser.parseSelectSimple(Parser.java:2788)
+	at org.h2.command.Parser.parseSelectSub(Parser.java:2636)
+	at org.h2.command.Parser.parseSelectUnion(Parser.java:2469)
+	at org.h2.command.Parser.parseSelect(Parser.java:2440)
+	at org.h2.command.Parser.parsePrepared(Parser.java:814)
+	at org.h2.command.Parser.parse(Parser.java:788)
+	at org.h2.command.Parser.parse(Parser.java:760)
+	at org.h2.command.Parser.prepareCommand(Parser.java:683)
+	at org.h2.engine.Session.prepareLocal(Session.java:627)
+	at org.h2.engine.Session.prepareCommand(Session.java:565)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1292)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:77)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:349)
+	at com.querydsl.sql.AbstractSQLQuery.getPreparedStatement(AbstractSQLQuery.java:318)
+	at com.querydsl.sql.AbstractSQLQuery.fetch(AbstractSQLQuery.java:439)
+	at com.bobman159.querydsl.poc.QueryDSLPoc_Main.main(QueryDSLPoc_Main.java:73)

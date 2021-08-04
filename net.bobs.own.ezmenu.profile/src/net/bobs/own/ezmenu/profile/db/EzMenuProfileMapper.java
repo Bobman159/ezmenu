@@ -75,49 +75,49 @@ public class EzMenuProfileMapper extends AbstractTableMapper {
 				//Sunday
 				category= results.getString(3);
 				prepTime = results.getString(10);
-				EzMenuProfileDay sunday = new EzMenuProfileDay(WeekDay.Sunday,MealCategory.toCategory(category),
+				EzMenuProfileDay sunday = new EzMenuProfileDay(WeekDay.SUNDAY,MealCategory.toCategory(category),
 				                                               PrepTimes.toPrepTime(prepTime));
 				profile.addProfileDay(sunday);
 				
 				//Monday
 				category = results.getString(4);
 				prepTime = results.getString(11);
-				EzMenuProfileDay monday = new EzMenuProfileDay(WeekDay.Monday,MealCategory.toCategory(category),
+				EzMenuProfileDay monday = new EzMenuProfileDay(WeekDay.MONDAY,MealCategory.toCategory(category),
 				                                               PrepTimes.toPrepTime(prepTime));
 				profile.addProfileDay(monday);
 				
 				//Tuesday
 				category = results.getString(5);
 				prepTime = results.getString(12);
-				EzMenuProfileDay tuesday = new EzMenuProfileDay(WeekDay.Tuesday,MealCategory.toCategory(category),
+				EzMenuProfileDay tuesday = new EzMenuProfileDay(WeekDay.TUESDAY,MealCategory.toCategory(category),
 				                                                PrepTimes.toPrepTime(prepTime));
 				profile.addProfileDay(tuesday);
 				
 				//Wednesday
 				category = results.getString(6);
 				prepTime = results.getString(13);
-				EzMenuProfileDay wednesday = new EzMenuProfileDay(WeekDay.Wednesday,MealCategory.toCategory(category),
+				EzMenuProfileDay wednesday = new EzMenuProfileDay(WeekDay.WEDNESDAY,MealCategory.toCategory(category),
 				                                                  PrepTimes.toPrepTime(prepTime));
 				profile.addProfileDay(wednesday);
 				
 				//Thursday
 				category = results.getString(7);
 				prepTime = results.getString(14);
-				EzMenuProfileDay thursday = new EzMenuProfileDay(WeekDay.Thursday,MealCategory.toCategory(category),
+				EzMenuProfileDay thursday = new EzMenuProfileDay(WeekDay.THURSDAY,MealCategory.toCategory(category),
 						                                           PrepTimes.toPrepTime(prepTime));
 				profile.addProfileDay(thursday);
 				
 				//Friday
 				category = results.getString(8);
 				prepTime = results.getString(15);
-				EzMenuProfileDay friday = new EzMenuProfileDay(WeekDay.Friday,MealCategory.toCategory(category),
+				EzMenuProfileDay friday = new EzMenuProfileDay(WeekDay.FRIDAY,MealCategory.toCategory(category),
 						                                         PrepTimes.toPrepTime(prepTime));
 				profile.addProfileDay(friday);
 				
 				//Saturday
 				category = results.getString(9);
 				prepTime = results.getString(16);
-				EzMenuProfileDay saturday = new EzMenuProfileDay(WeekDay.Saturday,MealCategory.toCategory(category),
+				EzMenuProfileDay saturday = new EzMenuProfileDay(WeekDay.SATURDAY,MealCategory.toCategory(category),
 						                                           PrepTimes.toPrepTime(prepTime));
 				profile.addProfileDay(saturday);
 
@@ -381,7 +381,7 @@ public class EzMenuProfileMapper extends AbstractTableMapper {
 		/*
 		 * 0 = SUNDAY, 1 = MONDAY... 7 = SATURDAY
 		 */
-		for (int index = WeekDay.Sunday.getDay(); index <= WeekDay.Saturday.getDay(); index++) {
+		for (int index = WeekDay.SUNDAY.getDay(); index <= WeekDay.SATURDAY.getDay(); index++) {
 
 			try {
 				EzMenuProfileDay day = profile.getProfileDay(index);

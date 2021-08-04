@@ -76,6 +76,7 @@ public class MealDataGenerator {
 	 */
 	public int generateMeals(Object[][] genMeals) {
 	   
+	   writeToLog("generateMeals: ENTER");
 	   int mealsAdded = 0;
 	   EzMenuMeal meal = null;
       ListIngredients ingredientsList = new ListIngredients();	   
@@ -103,7 +104,9 @@ public class MealDataGenerator {
 	         mealCount--;
 	      }
 	   }
-	   
+
+	   writeToLog(mealsAdded + " added to the database");
+	   writeToLog("generateMeals: EXIT");
 	   return mealsAdded;
 	}
 	

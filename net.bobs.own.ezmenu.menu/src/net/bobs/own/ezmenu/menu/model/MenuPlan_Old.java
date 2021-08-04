@@ -46,7 +46,7 @@ public class MenuPlan_Old {
 	   
 	   for (int weekIx = 0; weekIx < numWeeks; weekIx++) {
 
-	      for (int day = 0;day <= WeekDay.Saturday.getDay();day++) {
+	      for (int day = 0;day <= WeekDay.SATURDAY.getDay();day++) {
 	         
 	         if (mealsList != null && mealsList.size() > 0) {
 	            mealsList.clear();
@@ -54,7 +54,7 @@ public class MenuPlan_Old {
 
 	         EzMenuProfileDay profDay = profile.getProfileDay(day);
 	         String weekCatgy = profDay.getCategory().toString();
-	         String weekPrepTime = profDay.getprepTime().getPrepTime();
+	         String weekPrepTime = profDay.getprepTime().toString();
 	         
 //	         try {
 	            //TODO: Consider getting the meals information up front instead of as each day is processed

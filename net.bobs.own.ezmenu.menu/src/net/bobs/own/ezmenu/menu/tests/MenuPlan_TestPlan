@@ -37,7 +37,7 @@ Category Tests (Same Preparation Time used for All Meals & Profile)
 Description                                                                     Test Class
 --------------------------------------------------------------------------      -----------------------------
 No Meals for one category (test each category)
-  * Should return full plan - using other categories
+  * Should return full plan - using other categories (category switching)
   
 Not enough meals for all categories in profile                                  NotEnoughMealsAllCategoriesTest
   * Should be flagged as incomplete profile and partial plan returned (if possible)

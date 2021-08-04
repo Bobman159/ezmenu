@@ -7,13 +7,13 @@ import net.bobs.own.db.h2.db.H2AbstractDatabaseService;
 public class EzMenuProfileDay {
 
 	public enum WeekDay {
-	      Sunday(0), 
-	      Monday(1), 
-	      Tuesday(2), 
-	      Wednesday(3), 
-	      Thursday(4), 
-	      Friday(5), 
-	      Saturday(6);
+	      SUNDAY(0), 
+	      MONDAY(1), 
+	      TUESDAY(2), 
+	      WEDNESDAY(3), 
+	      THURSDAY(4), 
+	      FRIDAY(5), 
+	      SATURDAY(6);
 	   
 	      private int day;
 	      
@@ -36,25 +36,59 @@ public class EzMenuProfileDay {
 	      */
 	 static public WeekDay toDay(int number) {
 	    
-	    WeekDay profDay = WeekDay.Sunday;
+	    WeekDay profDay = WeekDay.SUNDAY;
 	    
-	    if (number == WeekDay.Sunday.day) {
-	       profDay = WeekDay.Sunday;
-	    } else if (number == WeekDay.Monday.day) {
-	       profDay = WeekDay.Monday;
-	    } else if (number == WeekDay.Tuesday.day) {
-	       profDay = WeekDay.Tuesday;
-	    } else if (number == WeekDay.Wednesday.day) {
-	       profDay = WeekDay.Wednesday;
-	    } else if (number == WeekDay.Thursday.day) {
-	       profDay = WeekDay.Thursday;
-	    } else if (number == WeekDay.Friday.day) {
-	       profDay = WeekDay.Friday;
-	    } else if (number == WeekDay.Saturday.day) {
-	       profDay = WeekDay.Saturday;
+	    if (number == WeekDay.SUNDAY.day) {
+	       profDay = WeekDay.SUNDAY;
+	    } else if (number == WeekDay.MONDAY.day) {
+	       profDay = WeekDay.MONDAY;
+	    } else if (number == WeekDay.TUESDAY.day) {
+	       profDay = WeekDay.TUESDAY;
+	    } else if (number == WeekDay.WEDNESDAY.day) {
+	       profDay = WeekDay.WEDNESDAY;
+	    } else if (number == WeekDay.THURSDAY.day) {
+	       profDay = WeekDay.THURSDAY;
+	    } else if (number == WeekDay.FRIDAY.day) {
+	       profDay = WeekDay.FRIDAY;
+	    } else if (number == WeekDay.SATURDAY.day) {
+	       profDay = WeekDay.SATURDAY;
 	    }
 	    
 	    return profDay;
+	 }
+	 
+	 /**
+	  * Returns the current week day as a string "Sunday", "Monday", etc
+	  * 
+	  */
+	 @Override
+	 public String toString() {
+	    String weekDay = "";
+	    
+	    switch (day) {
+	       case 0:
+	          weekDay = "Sunday";
+	          break;
+	       case 1:
+	          weekDay = "Monday";
+	          break;
+	       case 2:
+	          weekDay = "Tuesday";
+	          break;
+	       case 3:
+	          weekDay = "Wednesday";
+	          break;
+	       case 4:
+	          weekDay = "Thursday";
+	          break;
+	       case 5:
+	          weekDay = "Friday";
+	          break;
+	       case 6:
+	          weekDay = "Saturday";
+	          break;
+	    }
+	    return weekDay;
 	 }
 	 
 	};
@@ -67,7 +101,37 @@ public class EzMenuProfileDay {
 	 * Updates to these fields may also require the ProfileDataGenerator class to be updated.
 	 */
 	public enum MealCategory {
-	   Beef,Chicken, Fish, Pasta,Pork, Turkey,Veggie;
+	   BEEF("Beef"),
+	   CHICKEN("Chicken"), 
+	   FISH("Fish"), 
+	   PASTA("Pasta"),
+	   PORK("Pork"), 
+	   TURKEY("Turkey"),
+	   VEGGIE("Veggie");
+	   	   
+	   private String category;
+	   
+	   private MealCategory(String category) {
+	      this.category = category;
+	   }
+	   
+//	   /**
+//	    * Returns the current category as a String value;
+//	    * @return
+//	    */
+//	   public String getCategory() {
+//	      return this.category;
+//	   }
+	   
+	   /**
+	    * Returns the current category as a String value
+	    * 
+	    */
+	   @Override 
+	   public String toString() {
+	      
+	      return this.category;
+	   }
 	   
 	     /**
        * Returns the category matching the string value. 
@@ -78,20 +142,20 @@ public class EzMenuProfileDay {
          
          MealCategory rtnCategory = null;
 
-         if (category.equals(EzMenuProfileDay.MealCategory.Beef.toString())) {
-            rtnCategory = EzMenuProfileDay.MealCategory.Beef;
-         } else if (category.equals(EzMenuProfileDay.MealCategory.Chicken.toString())) {
-            rtnCategory = EzMenuProfileDay.MealCategory.Chicken;
-         } else if (category.equals(EzMenuProfileDay.MealCategory.Fish.toString())) {
-            rtnCategory = EzMenuProfileDay.MealCategory.Fish;  
-         } else if (category.equals(EzMenuProfileDay.MealCategory.Pasta.toString())) {
-            rtnCategory = EzMenuProfileDay.MealCategory.Pasta; 
-         } else if (category.equals(EzMenuProfileDay.MealCategory.Pork.toString())) {
-            rtnCategory = EzMenuProfileDay.MealCategory.Pork;
-         } else if (category.equals(EzMenuProfileDay.MealCategory.Turkey.toString())) {
-            rtnCategory = EzMenuProfileDay.MealCategory.Turkey;
-         } else if (category.equals(EzMenuProfileDay.MealCategory.Veggie.toString())) {
-            rtnCategory = EzMenuProfileDay.MealCategory.Veggie;   
+         if (category.equals(EzMenuProfileDay.MealCategory.BEEF.toString())) {
+            rtnCategory = EzMenuProfileDay.MealCategory.BEEF;
+         } else if (category.equals(EzMenuProfileDay.MealCategory.CHICKEN.toString())) {
+            rtnCategory = EzMenuProfileDay.MealCategory.CHICKEN;
+         } else if (category.equals(EzMenuProfileDay.MealCategory.FISH.toString())) {
+            rtnCategory = EzMenuProfileDay.MealCategory.FISH;  
+         } else if (category.equals(EzMenuProfileDay.MealCategory.PASTA.toString())) {
+            rtnCategory = EzMenuProfileDay.MealCategory.PASTA; 
+         } else if (category.equals(EzMenuProfileDay.MealCategory.PORK.toString())) {
+            rtnCategory = EzMenuProfileDay.MealCategory.PORK;
+         } else if (category.equals(EzMenuProfileDay.MealCategory.TURKEY.toString())) {
+            rtnCategory = EzMenuProfileDay.MealCategory.TURKEY;
+         } else if (category.equals(EzMenuProfileDay.MealCategory.VEGGIE.toString())) {
+            rtnCategory = EzMenuProfileDay.MealCategory.VEGGIE;   
          }
 
          return rtnCategory;
@@ -119,7 +183,8 @@ public class EzMenuProfileDay {
 	    * Return the preparation time for the current profile day
 	    * @return - the preparation time
 	    */
-	   public String getPrepTime() {
+	   @Override
+	   public String toString() {
 	      return this.prepTime;
 	   }
 	   
@@ -132,15 +197,15 @@ public class EzMenuProfileDay {
 	      
 	      PrepTimes rtnPrepTimes = null;
 
-	      if (prepTime.equals(PrepTimes.TO15.getPrepTime())) {
+	      if (prepTime.equals(PrepTimes.TO15.toString())) {
 	         rtnPrepTimes = PrepTimes.TO15;
-	      } else if (prepTime.equals(PrepTimes.TO30.getPrepTime())) {
+	      } else if (prepTime.equals(PrepTimes.TO30.toString())) {
 	         rtnPrepTimes = PrepTimes.TO30;
-	      } else if (prepTime.equals(PrepTimes.TO45.getPrepTime())) {
+	      } else if (prepTime.equals(PrepTimes.TO45.toString())) {
 	         rtnPrepTimes = PrepTimes.TO45;  
-	      } else if (prepTime.equals(PrepTimes.TO60.getPrepTime())) {
+	      } else if (prepTime.equals(PrepTimes.TO60.toString())) {
 	         rtnPrepTimes = PrepTimes.TO60; 
-	      } else if (prepTime.equals(PrepTimes.PLUS60.getPrepTime())) {
+	      } else if (prepTime.equals(PrepTimes.PLUS60.toString())) {
 	         rtnPrepTimes = PrepTimes.PLUS60;
 	      }
 
@@ -228,7 +293,7 @@ public class EzMenuProfileDay {
 	}
 	
 	public void bindPrepTime(H2AbstractDatabaseService service, int index) throws SQLException {
-		service.setString(index, profPrepTime.getPrepTime());
+		service.setString(index, profPrepTime.toString());
 	}
 	
 	/**

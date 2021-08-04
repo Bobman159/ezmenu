@@ -112,13 +112,13 @@ public class ProfileEditDialog extends TitleAreaDialog implements IValidatorCall
 		try {			
 			//Don't allow for create OR rename of profile to an existing profile name....
 			EzMenuProfile newProfile = new EzMenuProfile(profile.getId(),txtName.getText());
-			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Sunday.getDay()));
-			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Monday.getDay()));
-			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Tuesday.getDay()));
-			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Wednesday.getDay()));					
-			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Thursday.getDay()));
-			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Friday.getDay()));
-			newProfile.addProfileDay(profile.getProfileDay(WeekDay.Saturday.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.SUNDAY.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.MONDAY.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.TUESDAY.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.WEDNESDAY.getDay()));					
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.THURSDAY.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.FRIDAY.getDay()));
+			newProfile.addProfileDay(profile.getProfileDay(WeekDay.SATURDAY.getDay()));
 
 			if ((profExists == true) &&
 				(txtName.getText().equals(profile.getName()) == false)) {
@@ -227,7 +227,7 @@ public class ProfileEditDialog extends TitleAreaDialog implements IValidatorCall
 			public String getText(Object element) {
 				//TODO: Verify this works correctly in the UI (08/12/18)   
 				EzMenuProfileDay model = (EzMenuProfileDay) element;
-				String prepTime = model.getprepTime().getPrepTime();
+				String prepTime = model.getprepTime().toString();
 				return prepTime;
 			}
 		});
